@@ -1,432 +1,227 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>業務損失 無料診断ツール</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
-:root {
-–ink: #1a1a18;
-–paper: #f5f2eb;
-–accent: #c8401a;
-–mid: #6b6860;
-–border: #d6d0c4;
-–white: #ffffff;
-–light: #f0e8e3;
-–success: #2a6b3c;
-–row-alt: #faf8f4;
+:root{
+--ink:#1a1a18;
+--paper:#f5f2eb;
+--accent:#c8401a;
+--border:#d6d0c4;
+--white:#ffffff;
 }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-background: var(–paper);
-color: var(–ink);
-font-family: ‘Noto Sans JP’, sans-serif;
-min-height: 100vh;
-overflow-x: hidden;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image: repeating-linear-gradient(
-0deg, transparent, transparent 39px,
-rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px
-);
-pointer-events: none;
-z-index: 0;
+body{
+font-family:'Noto Sans JP',sans-serif;
+background:var(--paper);
+color:var(--ink);
+padding:40px 20px;
 }
 
-.wrap {
-max-width: 900px;
-margin: 0 auto;
-padding: 48px 20px 100px;
-position: relative;
-z-index: 1;
+.wrap{
+max-width:900px;
+margin:auto;
 }
 
-.header {
-border-top: 4px solid var(–ink);
-padding: 32px 0 28px;
-margin-bottom: 40px;
-}
-.header-tag {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .2em;
-color: var(–accent);
-margin-bottom: 12px;
-}
-.header h1 {
-font-weight: 900;
-font-size: clamp(20px, 4.5vw, 30px);
-line-height: 1.4;
-margin-bottom: 14px;
-}
-.header h1 mark {
-background: var(–ink);
-color: var(–paper);
-padding: 0 8px;
-}
-.header p {
-font-size: 13px;
-color: var(–mid);
-line-height: 1.8;
+h1{
+font-size:28px;
+margin-bottom:10px;
+font-weight:900;
 }
 
-.stepnav {
-display: flex;
-margin-bottom: 36px;
-border-bottom: 1px solid var(–border);
-}
-.stepnav-item {
-flex: 1;
-text-align: center;
-padding: 10px 4px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .05em;
-color: var(–border);
-border-bottom: 3px solid transparent;
-margin-bottom: -1px;
-transition: all .3s;
-}
-.stepnav-item.active { color: var(–accent); border-bottom-color: var(–accent); }
-.stepnav-item.done   { color: var(–success); border-bottom-color: var(–success); }
-
-.panel { display: none; animation: fadeUp .35s ease forwards; }
-.panel.active { display: block; }
-
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(14px); }
-to   { opacity: 1; transform: translateY(0); }
+p.desc{
+margin-bottom:30px;
+color:#555;
 }
 
-.panel-head {
-background: var(–ink);
-color: var(–white);
-padding: 18px 24px;
-display: flex;
-align-items: flex-start;
-gap: 14px;
-}
-.panel-head-num {
-background: var(–accent);
-color: white;
-font-size: 10px;
-font-weight: 700;
-letter-spacing: .15em;
-padding: 4px 10px;
-flex-shrink: 0;
-margin-top: 2px;
-}
-.panel-head h2 { font-size: 15px; font-weight: 700; line-height: 1.4; }
-.panel-head p  { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 3px; }
-
-.panel-body {
-background: var(–white);
-border: 1px solid var(–border);
-border-top: none;
-padding: 28px 24px 24px;
+table{
+width:100%;
+border-collapse:collapse;
+margin-bottom:20px;
+background:white;
 }
 
-.field-row { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-.field { flex: 1; min-width: 200px; }
-.field label {
-display: block;
-font-size: 12px;
-font-weight: 700;
-margin-bottom: 6px;
-}
-.field label .opt { font-weight: 400; color: var(–mid); font-size: 11px; margin-left: 6px; }
-
-input[type=“text”],
-input[type=“number”],
-select {
-width: 100%;
-padding: 10px 14px;
-border: 1px solid var(–border);
-background: var(–paper);
-font-family: ‘Noto Sans JP’, sans-serif;
-font-size: 14px;
-color: var(–ink);
-outline: none;
-border-radius: 0;
--webkit-appearance: none;
-transition: border-color .2s, background .2s;
-}
-input:focus, select:focus {
-border-color: var(–ink);
-background: var(–white);
-}
-select {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘7’%3E%3Cpath d=‘M0 0l5 6 5-6z’ fill=’%231a1a18’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 14px center;
-padding-right: 36px;
-cursor: pointer;
+th{
+background:var(--ink);
+color:white;
+font-size:12px;
+padding:10px;
 }
 
-.role-section {
-background: var(–paper);
-border: 1px solid var(–border);
-padding: 20px;
-margin-bottom: 20px;
-}
-.role-section h3 {
-font-size: 13px;
-font-weight: 700;
-margin-bottom: 14px;
-color: var(–mid);
-letter-spacing: .05em;
-}
-.role-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-gap: 8px;
-}
-.role-item { position: relative; }
-.role-item input[type=“radio”] { position: absolute; opacity: 0; width: 0; }
-.role-item label {
-display: block;
-padding: 10px 14px;
-border: 1px solid var(–border);
-cursor: pointer;
-font-size: 13px;
-font-weight: 400;
-background: var(–white);
-transition: all .15s;
-margin: 0;
-line-height: 1.5;
-}
-.role-item input:checked + label {
-background: var(–ink);
-color: white;
-border-color: var(–ink);
+td{
+border-bottom:1px solid var(--border);
+padding:8px;
 }
 
-.tasks-table-wrap { overflow-x: auto; margin-bottom: 16px; }
-
-table.tasks {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
-min-width: 680px;
-}
-table.tasks thead tr { background: var(–ink); color: var(–white); }
-table.tasks thead th {
-padding: 10px 8px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .04em;
-text-align: center;
-white-space: nowrap;
-border-right: 1px solid rgba(255,255,255,.1);
-}
-table.tasks thead th:first-child { text-align: left; padding-left: 12px; }
-table.tasks thead th.accent-col { background: var(–accent); }
-
-table.tasks tbody tr { background: var(–white); }
-table.tasks tbody tr:nth-child(even) { background: var(–row-alt); }
-table.tasks tbody td {
-padding: 5px 5px;
-border-bottom: 1px solid var(–border);
-vertical-align: middle;
-}
-table.tasks tbody td:first-child { padding-left: 8px; }
-table.tasks tbody td input[type=“text”],
-table.tasks tbody td input[type=“number”],
-table.tasks tbody td select {
-padding: 8px 10px;
-font-size: 13px;
-background: var(–white);
-border-color: #e8e4dc;
-}
-table.tasks tbody td input[type=“number”] { text-align: right; }
-table.tasks tbody td.calc-cell {
-text-align: center;
-font-weight: 700;
-font-size: 13px;
-color: var(–accent);
-background: var(–light);
-white-space: nowrap;
-min-width: 72px;
-}
-table.tasks tbody td.del-cell { text-align: center; width: 36px; }
-
-.btn-del {
-background: none;
-border: 1px solid var(–border);
-color: var(–mid);
-width: 28px;
-height: 28px;
-cursor: pointer;
-font-size: 16px;
-line-height: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: all .15s;
-margin: 0 auto;
-}
-.btn-del:hover { background: var(–accent); border-color: var(–accent); color: white; }
-
-.total-row td {
-background: var(–ink) !important;
-color: white !important;
-font-weight: 700;
-padding: 10px 8px !important;
-border: none !important;
-text-align: center;
-}
-.total-row td:first-child { text-align: right; padding-right: 12px !important; }
-.total-row td.accent-total { background: var(–accent) !important; font-size: 15px; }
-
-.btn-add-row {
-display: flex;
-align-items: center;
-gap: 8px;
-padding: 10px 20px;
-background: none;
-border: 1px dashed var(–border);
-color: var(–mid);
-font-family: ‘Noto Sans JP’, sans-serif;
-font-size: 13px;
-cursor: pointer;
-transition: all .2s;
-width: 100%;
-justify-content: center;
-margin-bottom: 20px;
-}
-.btn-add-row:hover { border-color: var(–ink); color: var(–ink); background: var(–paper); }
-
-.btn {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-padding: 13px 28px;
-font-family: ‘Noto Sans JP’, sans-serif;
-font-size: 14px;
-font-weight: 700;
-cursor: pointer;
-border: none;
-transition: all .2s;
-}
-.btn-primary { background: var(–ink); color: white; }
-.btn-primary:hover { background: var(–accent); }
-.btn-secondary {
-background: transparent;
-color: var(–mid);
-border: 1px solid var(–border);
-font-size: 13px;
-padding: 11px 20px;
-}
-.btn-secondary:hover { border-color: var(–ink); color: var(–ink); }
-.btn-row { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-.btn-row .btn-primary { flex: 1; justify-content: center; min-width: 160px; }
-
-/* Result */
-.result-wrap { display: none; }
-.result-wrap.active { display: block; animation: fadeUp .4s ease; }
-
-.result-hero {
-background: var(–ink);
-color: white;
-padding: 36px 28px 28px;
-margin-bottom: 2px;
-}
-.result-hero-label {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .2em;
-color: var(–accent);
-margin-bottom: 14px;
-}
-.result-hero h2 {
-font-size: clamp(15px, 3vw, 21px);
-font-weight: 900;
-line-height: 1.4;
-margin-bottom: 24px;
-}
-.kpi-grid {
-display: grid;
-grid-template-columns: 1fr 1fr 1fr;
-gap: 2px;
-}
-.kpi-item { background: rgba(255,255,255,.07); padding: 18px 20px; }
-.kpi-item.highlight { background: var(–accent); }
-.kpi-label {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .08em;
-color: rgba(255,255,255,.5);
-margin-bottom: 8px;
-}
-.kpi-item.highlight .kpi-label { color: rgba(255,255,255,.8); }
-.kpi-value { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
-.kpi-unit { font-size: 13px; font-weight: 400; color: rgba(255,255,255,.6); margin-left: 4px; }
-
-.result-table-wrap {
-background: var(–white);
-border: 1px solid var(–border);
-border-top: none;
-padding: 24px 20px;
-margin-bottom: 2px;
-}
-.result-table-wrap h3 {
-font-size: 13px;
-font-weight: 700;
-color: var(–mid);
-letter-spacing: .08em;
-margin-bottom: 16px;
+td input{
+width:100%;
+padding:6px;
 }
 
-table.result-tbl {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
-min-width: 560px;
+.number{
+text-align:right;
 }
-table.result-tbl thead th {
-background: var(–paper);
-padding: 8px 12px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: .04em;
-color: var(–mid);
-text-align: center;
-border-bottom: 2px solid var(–border);
-white-space: nowrap;
-}
-table.result-tbl thead th:first-child { text-align: left; }
-table.result-tbl tbody td {
-padding: 10px 12px;
-border-bottom: 1px solid var(–border);
-text-align: center;
-}
-table.result-tbl tbody td:first-child { text-align: left; }
-table.result-tbl tbody td.cost-cell { font-weight: 700; color: var(–accent); }
-table.result-tbl tbody td.rank-cell { font-weight: 900; font-size: 15px; }
-table.result-tbl tfoot td {
-background: var(–ink);
-color: white;
-padding: 10px 12px;
-font-weight: 700;
-text-align: center;
-}
-table.result-tbl tfoot td:first-child { text-align: left; }
-table.result-tbl tfoot td.accent-foot { background: var(–accent); font-size: 16px; }
 
-.cta-box {
-border: 2px solid var(–accent);
-padding: 28px 24px;
-margin-top: 2px;
-background: var(–white);
+.calc{
+text-align:right;
+font-weight:bold;
+color:var(--accent);
 }
-.cta-box h3 { font-size: 16px; font-weight: 900; margin-bottom: 10px; }
-.cta-box p  { font-size: 13px; color: var(–mid);
+
+.total{
+font-size:18px;
+font-weight:900;
+color:var(--accent);
+}
+
+button{
+padding:10px 20px;
+background:var(--ink);
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:var(--accent);
+}
+
+.add{
+margin-bottom:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>業務損失 無料診断ツール</h1>
+<p class="desc">日々の業務の無駄時間を入力すると、年間の損失コストを自動計算します。</p>
+
+<table id="taskTable">
+
+<thead>
+<tr>
+<th>業務名</th>
+<th>人数</th>
+<th>時間/日（分）</th>
+<th>時給</th>
+<th>年間損失</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="tbody">
+
+<tr>
+<td><input type="text" placeholder="例：手作業のデータ入力"></td>
+
+<td>
+<input type="number" value="1" class="people">
+</td>
+
+<td>
+<input type="number" value="30" class="minutes">
+</td>
+
+<td>
+<input type="number" value="1500" class="wage">
+</td>
+
+<td class="calc">0</td>
+
+<td>
+<button onclick="deleteRow(this)">×</button>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<button class="add" onclick="addRow()">＋業務を追加</button>
+
+<p class="total">
+年間損失合計：  
+<span id="totalCost">0</span> 円
+</p>
+
+</div>
+
+<script>
+
+function calculate(){
+
+let rows=document.querySelectorAll("#tbody tr");
+
+let total=0;
+
+rows.forEach(row=>{
+
+let people=row.querySelector(".people").value;
+let minutes=row.querySelector(".minutes").value;
+let wage=row.querySelector(".wage").value;
+
+let cost=(people*minutes/60*wage*240);
+
+row.querySelector(".calc").innerText=Math.round(cost).toLocaleString();
+
+total+=cost;
+
+});
+
+document.getElementById("totalCost").innerText=Math.round(total).toLocaleString();
+
+}
+
+document.addEventListener("input",calculate);
+
+function addRow(){
+
+let tbody=document.getElementById("tbody");
+
+let row=document.createElement("tr");
+
+row.innerHTML=`
+<td><input type="text"></td>
+<td><input type="number" value="1" class="people"></td>
+<td><input type="number" value="30" class="minutes"></td>
+<td><input type="number" value="1500" class="wage"></td>
+<td class="calc">0</td>
+<td><button onclick="deleteRow(this)">×</button></td>
+`;
+
+tbody.appendChild(row);
+
+}
+
+function deleteRow(btn){
+
+btn.closest("tr").remove();
+
+calculate();
+
+}
+
+calculate();
+
+</script>
+
+</body>
+</html>
