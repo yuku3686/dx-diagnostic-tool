@@ -7,146 +7,120 @@
 <title>業務損失 無料診断ツール</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink: #1a1a18;
-  --paper: #f5f2eb;
-  --accent: #c8401a;
-  --border: #d6d0c4;
-  --white: #ffffff;
-  --light: #f0e8e3;
-  --mid: #6b6860;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  background: var(--paper);
-  color: var(--ink);
+  background: #f5f2eb;
+  color: #1a1a18;
   padding: 40px 20px 80px;
+  margin: 0;
 }
 .wrap { max-width: 960px; margin: auto; }
-.header { border-top: 4px solid var(--ink); padding-top: 24px; margin-bottom: 28px; }
-.htag { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
-.header h1 { font-size: 24px; font-weight: 900; margin-bottom: 10px; line-height: 1.4; }
-.hmark { background: var(--ink); color: var(--paper); padding: 2px 8px; }
-.header p { color: var(--mid); font-size: 13px; line-height: 1.8; }
-.sbox { background: var(--white); border: 1px solid var(--border); margin-bottom: 20px; }
-.shead { background: var(--ink); color: var(--white); padding: 10px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.snum { background: var(--accent); padding: 2px 8px; font-size: 10px; white-space: nowrap; }
-.ssub { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.6); }
-.sbody { padding: 20px 24px; }
-.frow { display: flex; gap: 16px; flex-wrap: wrap; }
-.field { flex: 1; min-width: 180px; }
+h1 { font-size: 24px; font-weight: 900; margin-bottom: 10px; border-top: 4px solid #1a1a18; padding-top: 20px; }
+.desc { color: #6b6860; font-size: 13px; margin-bottom: 28px; line-height: 1.8; }
+h2 { font-size: 13px; font-weight: 700; background: #1a1a18; color: white; padding: 9px 16px; margin-bottom: 0; }
+.section { border: 1px solid #d6d0c4; margin-bottom: 24px; }
+.section-body { padding: 20px; background: white; }
+.field-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.field { flex: 1; min-width: 180px; margin-bottom: 4px; }
 .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-.opt { font-weight: 400; color: #999; font-size: 11px; margin-left: 6px; }
-.twrap { overflow-x: auto; margin-bottom: 10px; }
+input[type="text"] {
+  width: 100%; padding: 8px 12px; border: 1px solid #d6d0c4;
+  background: #f5f2eb; font-size: 13px; font-family: inherit; box-sizing: border-box;
+}
+input[type="text"]:focus { border-color: #1a1a18; outline: none; background: white; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead tr { background: var(--ink); color: var(--white); }
-thead th { padding: 9px 7px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap; }
-thead th:first-child { text-align: left; padding-left: 10px; }
-thead th.tha { background: var(--accent); }
-tbody tr { background: var(--white); }
-tbody tr:nth-child(even) { background: #faf8f4; }
-tbody td { padding: 4px 4px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-tbody td:first-child { padding-left: 6px; }
-td.calc { text-align: center; font-weight: 700; color: var(--accent); background: var(--light); white-space: nowrap; padding: 4px 8px; min-width: 72px; }
+table thead tr { background: #1a1a18; color: white; }
+table thead th { padding: 9px 7px; font-size: 11px; font-weight: 700; text-align: center; white-space: nowrap; }
+table thead th:first-child { text-align: left; padding-left: 10px; }
+table thead th.ac { background: #c8401a; }
+table tbody tr { background: white; }
+table tbody tr:nth-child(even) { background: #faf8f4; }
+table tbody td { padding: 4px 4px; border-bottom: 1px solid #d6d0c4; vertical-align: middle; }
+table tbody td:first-child { padding-left: 6px; }
+table tbody td input[type="text"],
+table tbody td input[type="number"],
+table tbody td select {
+  width: 100%; padding: 7px 7px; border: 1px solid #e0dcd4;
+  background: white; font-size: 13px; font-family: inherit; box-sizing: border-box;
+}
+table tbody td input[type="number"] { text-align: right; }
+table tfoot tr { background: #1a1a18; color: white; }
+table tfoot td { padding: 9px 7px; font-weight: 700; text-align: center; }
+table tfoot td:first-child { text-align: right; padding-right: 10px; }
+table tfoot td.ac { background: #c8401a; font-size: 15px; }
+td.calc { text-align: center; font-weight: 700; color: #c8401a; background: #f0e8e3; white-space: nowrap; padding: 4px 8px; }
 td.del { text-align: center; width: 32px; }
-tfoot tr { background: var(--ink); color: var(--white); }
-tfoot td { padding: 9px 7px; font-weight: 700; text-align: center; }
-tfoot td:first-child { text-align: right; padding-right: 10px; }
-tfoot td.tfa { background: var(--accent); font-size: 15px; }
-input[type="text"], input[type="number"] {
-  width: 100%; padding: 7px 8px;
-  border: 1px solid #e0dcd4; background: var(--white);
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  font-size: 13px; color: var(--ink); outline: none;
+.twrap { overflow-x: auto; margin-bottom: 10px; }
+button {
+  padding: 9px 18px; background: #1a1a18; color: white; border: none;
+  font-size: 13px; font-family: inherit; cursor: pointer;
 }
-input[type="text"]:focus, input[type="number"]:focus { border-color: var(--ink); }
-select {
-  width: 100%; padding: 7px 8px;
-  border: 1px solid #e0dcd4; background: var(--white);
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  font-size: 13px; color: var(--ink); outline: none;
-}
-select:focus { border-color: var(--ink); }
-.field input[type="text"] { padding: 8px 12px; border-color: var(--border); background: var(--paper); }
-.field input[type="text"]:focus { background: var(--white); border-color: var(--ink); }
+button:hover { background: #c8401a; }
 button.addbtn {
-  display: block; width: 100%; padding: 9px;
-  background: none; border: 1px dashed var(--border); color: var(--mid);
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  font-size: 13px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s;
+  display: block; width: 100%; background: none; border: 1px dashed #d6d0c4;
+  color: #6b6860; margin-bottom: 8px; padding: 9px;
 }
-button.addbtn:hover { border-color: var(--ink); color: var(--ink); background: var(--white); }
+button.addbtn:hover { border-color: #1a1a18; color: #1a1a18; background: #f5f2eb; }
 button.delbtn {
-  width: 26px; height: 26px; background: none; border: 1px solid var(--border);
-  color: var(--mid); cursor: pointer; font-size: 13px; display: block; margin: auto; transition: all 0.15s;
+  width: 26px; height: 26px; padding: 0; display: block; margin: auto;
+  background: none; border: 1px solid #d6d0c4; color: #6b6860; font-size: 13px;
 }
-button.delbtn:hover { background: var(--accent); border-color: var(--accent); color: var(--white); }
+button.delbtn:hover { background: #c8401a; border-color: #c8401a; color: white; }
 button.gobtn {
-  padding: 13px 36px; background: var(--ink); color: var(--white); border: none;
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s;
-  margin-top: 12px; margin-bottom: 24px; display: block;
+  padding: 13px 36px; font-size: 14px; font-weight: 700;
+  display: block; margin-top: 12px; margin-bottom: 4px;
 }
-button.gobtn:hover { background: var(--accent); }
-.rbox { display: none; margin-top: 4px; }
-.rhero { background: var(--ink); color: var(--white); padding: 28px 24px; margin-bottom: 2px; }
-.rlbl { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
-.rhero h2 { font-size: 19px; font-weight: 900; margin-bottom: 20px; line-height: 1.4; }
+.result { display: none; margin-top: 4px; }
+.result-hero { background: #1a1a18; color: white; padding: 28px 24px; margin-bottom: 2px; }
+.result-hero h2 { background: none; padding: 0; color: white; font-size: 19px; margin-bottom: 20px; }
 .krow { display: flex; gap: 2px; flex-wrap: wrap; }
 .kpi { flex: 1; min-width: 130px; background: rgba(255,255,255,0.07); padding: 14px 16px; }
-.kpi.ka { background: var(--accent); }
+.kpi.ka { background: #c8401a; }
 .klbl { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
 .ka .klbl { color: rgba(255,255,255,0.8); }
-.kval { font-size: 24px; font-weight: 900; line-height: 1; }
+.kval { font-size: 24px; font-weight: 900; }
 .kunit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-left: 3px; }
-.rtw { background: var(--white); border: 1px solid var(--border); border-top: none; padding: 20px; margin-bottom: 2px; overflow-x: auto; }
-.rtw h3 { font-size: 12px; font-weight: 700; color: var(--mid); margin-bottom: 12px; }
-table.rt { min-width: 540px; background: transparent; }
-table.rt thead tr { background: var(--paper); }
-table.rt thead th { background: var(--paper); color: var(--mid); padding: 7px 9px; font-size: 11px; font-weight: 700; border-bottom: 2px solid var(--border); text-align: center; white-space: nowrap; }
+.rtable-wrap { background: white; border: 1px solid #d6d0c4; border-top: none; padding: 20px; margin-bottom: 2px; overflow-x: auto; }
+.rtable-wrap h3 { font-size: 12px; font-weight: 700; color: #6b6860; margin-bottom: 12px; }
+table.rt { min-width: 540px; }
+table.rt thead tr { background: #f5f2eb; }
+table.rt thead th { background: #f5f2eb; color: #6b6860; padding: 7px 9px; font-size: 11px; font-weight: 700; border-bottom: 2px solid #d6d0c4; text-align: center; white-space: nowrap; }
 table.rt thead th:first-child { text-align: left; }
-table.rt tbody td { padding: 9px 9px; border-bottom: 1px solid var(--border); text-align: center; background: transparent; }
+table.rt tbody tr { background: transparent; }
+table.rt tbody tr:nth-child(even) { background: transparent; }
+table.rt tbody td { padding: 9px; border-bottom: 1px solid #d6d0c4; text-align: center; background: transparent; }
 table.rt tbody td:first-child { text-align: left; }
-table.rt tbody td.rc { font-weight: 700; color: var(--accent); }
+table.rt tbody td.rc { font-weight: 700; color: #c8401a; }
 table.rt tbody td.rr { font-weight: 900; font-size: 14px; }
-table.rt tfoot td { background: var(--ink); color: var(--white); padding: 9px; font-weight: 700; text-align: center; }
+table.rt tfoot td { background: #1a1a18; color: white; padding: 9px; font-weight: 700; text-align: center; }
 table.rt tfoot td:first-child { text-align: left; }
-table.rt tfoot td.rfa { background: var(--accent); font-size: 14px; }
-.note { font-size: 11px; color: var(--mid); line-height: 1.7; margin-top: 10px; }
-.ctabox { border: 2px solid var(--accent); background: var(--white); padding: 24px; margin-top: 2px; }
+table.rt tfoot td.rfa { background: #c8401a; font-size: 14px; }
+.note { font-size: 11px; color: #6b6860; line-height: 1.7; margin-top: 10px; }
+.ctabox { border: 2px solid #c8401a; background: white; padding: 24px; margin-top: 2px; }
 .ctabox h3 { font-size: 15px; font-weight: 900; margin-bottom: 8px; }
-.ctabox p { font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 18px; }
-.ctabtn {
-  display: block; width: 100%; padding: 14px; background: var(--accent); color: var(--white); border: none;
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; text-align: center;
-}
-.ctabtn:hover { background: #a33214; }
-.ctanote { font-size: 11px; color: var(--mid); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.6; }
+.ctabox p { font-size: 13px; color: #6b6860; line-height: 1.7; margin-bottom: 18px; }
+.ctabtn { display: block; width: 100%; padding: 14px; font-size: 14px; font-weight: 700; text-align: center; }
+.ctanote { font-size: 11px; color: #6b6860; margin-top: 10px; padding-top: 10px; border-top: 1px solid #d6d0c4; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<div class="header">
-  <div class="htag">無料診断 / 所要時間 約5〜10分</div>
-  <h1><span class="hmark">御社のルーティン業務</span>は<br>年間いくらのコストを生んでいますか？</h1>
-  <p>業務ごとに担当役職・頻度・作業時間を入力するだけで、損失コストと自動化シミュレーションを確認できます。</p>
-</div>
+<h1>業務損失 無料診断ツール</h1>
+<p class="desc">業務ごとに担当役職・頻度・作業時間を入力するだけで、年間の損失コストと自動化シミュレーションを確認できます。</p>
 
 <!-- STEP 1 -->
 
-<div class="sbox">
-  <div class="shead"><span class="snum">STEP 01</span>会社・担当者の基本情報</div>
-  <div class="sbody">
-    <div class="frow">
+<div class="section">
+  <h2>STEP 01 &nbsp; 会社・担当者の基本情報</h2>
+  <div class="section-body">
+    <div class="field-row">
       <div class="field">
-        <label>会社名<span class="opt">任意</span></label>
+        <label>会社名（任意）</label>
         <input type="text" id="cname" placeholder="例：○○製作所">
       </div>
       <div class="field">
-        <label>部署名<span class="opt">任意</span></label>
+        <label>部署名（任意）</label>
         <input type="text" id="dname" placeholder="例：総務部">
       </div>
     </div>
@@ -155,12 +129,9 @@ table.rt tfoot td.rfa { background: var(--accent); font-size: 14px; }
 
 <!-- STEP 2 -->
 
-<div class="sbox">
-  <div class="shead">
-    <span class="snum">STEP 02</span>役職と時給の設定
-    <span class="ssub">ここで登録した役職がSTEP03のプルダウンに反映されます</span>
-  </div>
-  <div class="sbody">
+<div class="section">
+  <h2>STEP 02 &nbsp; 役職と時給の設定　※ STEP03の担当役職プルダウンに反映されます</h2>
+  <div class="section-body">
     <div class="twrap">
       <table>
         <thead>
@@ -190,14 +161,49 @@ table.rt tfoot td.rfa { background: var(--accent); font-size: 14px; }
 
 <!-- STEP 3 -->
 
-<div class="sbox">
-  <div class="shead"><span class="snum">STEP 03</span>ルーティン業務の入力</div>
-  <div class="sbody">
+<div class="section">
+  <h2>STEP 03 &nbsp; ルーティン業務の入力</h2>
+  <div class="section-body">
     <div class="twrap">
-      <table>
+      <table id="ttable">
         <thead>
           <tr>
             <th style="text-align:left;min-width:120px;">業務名</th>
-            <th style="min-width:148px;">業務の種類</th>
-            <th style="min-width:130px;">担当役職</th>
-            <t
+            <th style="min-width:150px;">業務の種類</th>
+            <th style="min-width:140px;">担当役職</th>
+            <th style="min-width:58px;">担当<br>人数</th>
+            <th style="min-width:150px;">発生頻度</th>
+            <th style="min-width:80px;">1回あたり<br>作業時間(分)</th>
+            <th class="ac" style="min-width:74px;">月間損失<br>時間(h)</th>
+            <th style="width:32px;"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr id="tt1">
+            <td><input type="text" class="tn" placeholder="例：売上集計" oninput="calc()"></td>
+            <td><select class="ty" onchange="calc()">
+              <option value="">選択してください</option>
+              <option value="0">データ転記・コピペ作業</option>
+              <option value="1">定型レポート・集計作業</option>
+              <option value="2">請求書・見積書の作成</option>
+              <option value="3">在庫・進捗の確認・記録</option>
+              <option value="4">定型メール・FAXの送信</option>
+              <option value="5">日報・勤怠・作業記録の入力</option>
+              <option value="6">手書き書類のデータ入力</option>
+              <option value="7">その他の定型事務作業</option>
+            </select></td>
+            <td><select class="tr2" onchange="calc()"><option value="">役職を先に登録してください</option></select></td>
+            <td><input type="number" class="tp" value="1" min="1" max="99" style="width:50px" oninput="calc()"></td>
+            <td><select class="tf" onchange="calc()">
+              <option value="0">毎日（月約20回）</option>
+              <option value="1">週3〜4回（月約15回）</option>
+              <option value="2">週1〜2回（月約6回）</option>
+              <option value="3">月2〜3回</option>
+              <option value="4">月1回</option>
+              <option value="5">四半期に1回（年4回）</option>
+              <option value="6">半年に1回（年2回）</option>
+              <option value="7">年1回</option>
+            </select></td>
+            <td><input type="number" class="tm" min="1" max="999" placeholder="30" style="width:62px" oninput="calc()"></td>
+            <td class="calc" id="mc1">--</td>
+            <td class="del"><button class="
