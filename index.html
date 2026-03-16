@@ -1,209 +1,330 @@
 <!DOCTYPE html>
-
 <html lang="ja">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>業務損失 無料診断ツール</title>
+
+<title>業務損失診断ツール</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
-body {
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-  background: #f5f2eb;
-  color: #1a1a18;
-  padding: 40px 20px 80px;
-  margin: 0;
+
+body{
+font-family:'Noto Sans JP',sans-serif;
+background:#f5f2eb;
+padding:40px;
+color:#1a1a18;
 }
-.wrap { max-width: 960px; margin: auto; }
-h1 { font-size: 24px; font-weight: 900; margin-bottom: 10px; border-top: 4px solid #1a1a18; padding-top: 20px; }
-.desc { color: #6b6860; font-size: 13px; margin-bottom: 28px; line-height: 1.8; }
-h2 { font-size: 13px; font-weight: 700; background: #1a1a18; color: white; padding: 9px 16px; margin-bottom: 0; }
-.section { border: 1px solid #d6d0c4; margin-bottom: 24px; }
-.section-body { padding: 20px; background: white; }
-.field-row { display: flex; gap: 16px; flex-wrap: wrap; }
-.field { flex: 1; min-width: 180px; margin-bottom: 4px; }
-.field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-input[type="text"] {
-  width: 100%; padding: 8px 12px; border: 1px solid #d6d0c4;
-  background: #f5f2eb; font-size: 13px; font-family: inherit; box-sizing: border-box;
+
+.wrap{
+max-width:1000px;
+margin:auto;
 }
-input[type="text"]:focus { border-color: #1a1a18; outline: none; background: white; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-table thead tr { background: #1a1a18; color: white; }
-table thead th { padding: 9px 7px; font-size: 11px; font-weight: 700; text-align: center; white-space: nowrap; }
-table thead th:first-child { text-align: left; padding-left: 10px; }
-table thead th.ac { background: #c8401a; }
-table tbody tr { background: white; }
-table tbody tr:nth-child(even) { background: #faf8f4; }
-table tbody td { padding: 4px 4px; border-bottom: 1px solid #d6d0c4; vertical-align: middle; }
-table tbody td:first-child { padding-left: 6px; }
-table tbody td input[type="text"],
-table tbody td input[type="number"],
-table tbody td select {
-  width: 100%; padding: 7px 7px; border: 1px solid #e0dcd4;
-  background: white; font-size: 13px; font-family: inherit; box-sizing: border-box;
+
+h1{
+font-size:28px;
+margin-bottom:20px;
 }
-table tbody td input[type="number"] { text-align: right; }
-table tfoot tr { background: #1a1a18; color: white; }
-table tfoot td { padding: 9px 7px; font-weight: 700; text-align: center; }
-table tfoot td:first-child { text-align: right; padding-right: 10px; }
-table tfoot td.ac { background: #c8401a; font-size: 15px; }
-td.calc { text-align: center; font-weight: 700; color: #c8401a; background: #f0e8e3; white-space: nowrap; padding: 4px 8px; }
-td.del { text-align: center; width: 32px; }
-.twrap { overflow-x: auto; margin-bottom: 10px; }
-button {
-  padding: 9px 18px; background: #1a1a18; color: white; border: none;
-  font-size: 13px; font-family: inherit; cursor: pointer;
+
+h2{
+margin-top:40px;
+margin-bottom:10px;
 }
-button:hover { background: #c8401a; }
-button.addbtn {
-  display: block; width: 100%; background: none; border: 1px dashed #d6d0c4;
-  color: #6b6860; margin-bottom: 8px; padding: 9px;
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+margin-bottom:20px;
 }
-button.addbtn:hover { border-color: #1a1a18; color: #1a1a18; background: #f5f2eb; }
-button.delbtn {
-  width: 26px; height: 26px; padding: 0; display: block; margin: auto;
-  background: none; border: 1px solid #d6d0c4; color: #6b6860; font-size: 13px;
+
+th{
+background:#1a1a18;
+color:white;
+font-size:12px;
+padding:8px;
 }
-button.delbtn:hover { background: #c8401a; border-color: #c8401a; color: white; }
-button.gobtn {
-  padding: 13px 36px; font-size: 14px; font-weight: 700;
-  display: block; margin-top: 12px; margin-bottom: 4px;
+
+td{
+border-bottom:1px solid #ddd;
+padding:6px;
 }
-.result { display: none; margin-top: 4px; }
-.result-hero { background: #1a1a18; color: white; padding: 28px 24px; margin-bottom: 2px; }
-.result-hero h2 { background: none; padding: 0; color: white; font-size: 19px; margin-bottom: 20px; }
-.krow { display: flex; gap: 2px; flex-wrap: wrap; }
-.kpi { flex: 1; min-width: 130px; background: rgba(255,255,255,0.07); padding: 14px 16px; }
-.kpi.ka { background: #c8401a; }
-.klbl { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
-.ka .klbl { color: rgba(255,255,255,0.8); }
-.kval { font-size: 24px; font-weight: 900; }
-.kunit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-left: 3px; }
-.rtable-wrap { background: white; border: 1px solid #d6d0c4; border-top: none; padding: 20px; margin-bottom: 2px; overflow-x: auto; }
-.rtable-wrap h3 { font-size: 12px; font-weight: 700; color: #6b6860; margin-bottom: 12px; }
-table.rt { min-width: 540px; }
-table.rt thead tr { background: #f5f2eb; }
-table.rt thead th { background: #f5f2eb; color: #6b6860; padding: 7px 9px; font-size: 11px; font-weight: 700; border-bottom: 2px solid #d6d0c4; text-align: center; white-space: nowrap; }
-table.rt thead th:first-child { text-align: left; }
-table.rt tbody tr { background: transparent; }
-table.rt tbody tr:nth-child(even) { background: transparent; }
-table.rt tbody td { padding: 9px; border-bottom: 1px solid #d6d0c4; text-align: center; background: transparent; }
-table.rt tbody td:first-child { text-align: left; }
-table.rt tbody td.rc { font-weight: 700; color: #c8401a; }
-table.rt tbody td.rr { font-weight: 900; font-size: 14px; }
-table.rt tfoot td { background: #1a1a18; color: white; padding: 9px; font-weight: 700; text-align: center; }
-table.rt tfoot td:first-child { text-align: left; }
-table.rt tfoot td.rfa { background: #c8401a; font-size: 14px; }
-.note { font-size: 11px; color: #6b6860; line-height: 1.7; margin-top: 10px; }
-.ctabox { border: 2px solid #c8401a; background: white; padding: 24px; margin-top: 2px; }
-.ctabox h3 { font-size: 15px; font-weight: 900; margin-bottom: 8px; }
-.ctabox p { font-size: 13px; color: #6b6860; line-height: 1.7; margin-bottom: 18px; }
-.ctabtn { display: block; width: 100%; padding: 14px; font-size: 14px; font-weight: 700; text-align: center; }
-.ctanote { font-size: 11px; color: #6b6860; margin-top: 10px; padding-top: 10px; border-top: 1px solid #d6d0c4; }
+
+input,select{
+width:100%;
+padding:6px;
+}
+
+button{
+padding:8px 14px;
+border:none;
+background:#1a1a18;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#c8401a;
+}
+
+.calc{
+font-weight:bold;
+color:#c8401a;
+text-align:right;
+}
+
+.total{
+font-size:20px;
+font-weight:900;
+color:#c8401a;
+}
+
 </style>
+
 </head>
+
 <body>
+
 <div class="wrap">
 
-<h1>業務損失 無料診断ツール</h1>
-<p class="desc">業務ごとに担当役職・頻度・作業時間を入力するだけで、年間の損失コストと自動化シミュレーションを確認できます。</p>
+<h1>業務損失診断ツール</h1>
 
-<!-- STEP 1 -->
+<h2>STEP01 会社名</h2>
+<input id="company" required>
 
-<div class="section">
-  <h2>STEP 01 &nbsp; 会社・担当者の基本情報</h2>
-  <div class="section-body">
-    <div class="field-row">
-      <div class="field">
-        <label>会社名（任意）</label>
-        <input type="text" id="cname" placeholder="例：○○製作所">
-      </div>
-      <div class="field">
-        <label>部署名（任意）</label>
-        <input type="text" id="dname" placeholder="例：総務部">
-      </div>
-    </div>
-  </div>
+<h2>STEP02 部署名（任意）</h2>
+<input id="dept">
+
+<h2>STEP03 役職と時給</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>役職</th>
+<th>時給</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="roleBody">
+
+<tr>
+<td><input class="role"></td>
+<td><input type="number" class="wage"></td>
+<td><button onclick="deleteRow(this)">×</button></td>
+</tr>
+
+</tbody>
+
+</table>
+
+<button onclick="addRole()">役職追加</button>
+
+<h2>STEP04 業務入力</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>業務名</th>
+<th>業務種類</th>
+<th>役職</th>
+<th>人数</th>
+<th>頻度</th>
+<th>作業時間(分)</th>
+<th>年間コスト</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="taskBody">
+
+<tr>
+
+<td><input></td>
+
+<td>
+<select>
+<option>事務</option>
+<option>営業</option>
+<option>管理</option>
+<option>製造</option>
+</select>
+</td>
+
+<td>
+<select class="roleSelect"></select>
+</td>
+
+<td>
+<input type="number" value="1" class="people">
+</td>
+
+<td>
+<select class="freq">
+<option value="240">毎日</option>
+<option value="52">週1</option>
+<option value="12">月1</option>
+<option value="1">年1</option>
+</select>
+</td>
+
+<td>
+<input type="number" value="10" class="time">
+</td>
+
+<td class="calc">0</td>
+
+<td>
+<button onclick="deleteRow(this)">×</button>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<button onclick="addTask()">業務追加</button>
+
+<p class="total">
+年間損失：<span id="total">0</span>円
+</p>
+
 </div>
 
-<!-- STEP 2 -->
+<script>
 
-<div class="section">
-  <h2>STEP 02 &nbsp; 役職と時給の設定　※ STEP03の担当役職プルダウンに反映されます</h2>
-  <div class="section-body">
-    <div class="twrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="text-align:left;min-width:220px;">役職名</th>
-            <th style="text-align:left;min-width:160px;">時給（円）</th>
-            <th style="width:32px;"></th>
-          </tr>
-        </thead>
-        <tbody id="rbody">
-          <tr id="rr1">
-            <td><input type="text" class="rn" placeholder="例：一般スタッフ" oninput="syncRoles()"></td>
-            <td><input type="number" class="rw" value="1500" min="1" style="width:120px" oninput="syncRoles()"></td>
-            <td><button class="delbtn" onclick="delRole('rr1')">x</button></td>
-          </tr>
-          <tr id="rr2">
-            <td><input type="text" class="rn" placeholder="例：管理職" oninput="syncRoles()"></td>
-            <td><input type="number" class="rw" value="2500" min="1" style="width:120px" oninput="syncRoles()"></td>
-            <td><button class="delbtn" onclick="delRole('rr2')">x</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button class="addbtn" onclick="addRole()">+ 役職を追加する</button>
-  </div>
-</div>
+function updateRoleOptions(){
 
-<!-- STEP 3 -->
+let roles=document.querySelectorAll(".role");
 
-<div class="section">
-  <h2>STEP 03 &nbsp; ルーティン業務の入力</h2>
-  <div class="section-body">
-    <div class="twrap">
-      <table id="ttable">
-        <thead>
-          <tr>
-            <th style="text-align:left;min-width:120px;">業務名</th>
-            <th style="min-width:150px;">業務の種類</th>
-            <th style="min-width:140px;">担当役職</th>
-            <th style="min-width:58px;">担当<br>人数</th>
-            <th style="min-width:150px;">発生頻度</th>
-            <th style="min-width:80px;">1回あたり<br>作業時間(分)</th>
-            <th class="ac" style="min-width:74px;">月間損失<br>時間(h)</th>
-            <th style="width:32px;"></th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr id="tt1">
-            <td><input type="text" class="tn" placeholder="例：売上集計" oninput="calc()"></td>
-            <td><select class="ty" onchange="calc()">
-              <option value="">選択してください</option>
-              <option value="0">データ転記・コピペ作業</option>
-              <option value="1">定型レポート・集計作業</option>
-              <option value="2">請求書・見積書の作成</option>
-              <option value="3">在庫・進捗の確認・記録</option>
-              <option value="4">定型メール・FAXの送信</option>
-              <option value="5">日報・勤怠・作業記録の入力</option>
-              <option value="6">手書き書類のデータ入力</option>
-              <option value="7">その他の定型事務作業</option>
-            </select></td>
-            <td><select class="tr2" onchange="calc()"><option value="">役職を先に登録してください</option></select></td>
-            <td><input type="number" class="tp" value="1" min="1" max="99" style="width:50px" oninput="calc()"></td>
-            <td><select class="tf" onchange="calc()">
-              <option value="0">毎日（月約20回）</option>
-              <option value="1">週3〜4回（月約15回）</option>
-              <option value="2">週1〜2回（月約6回）</option>
-              <option value="3">月2〜3回</option>
-              <option value="4">月1回</option>
-              <option value="5">四半期に1回（年4回）</option>
-              <option value="6">半年に1回（年2回）</option>
-              <option value="7">年1回</option>
-            </select></td>
-            <td><input type="number" class="tm" min="1" max="999" placeholder="30" style="width:62px" oninput="calc()"></td>
-            <td class="calc" id="mc1">--</td>
-            <td class="del"><button class="
+let selects=document.querySelectorAll(".roleSelect");
+
+selects.forEach(sel=>{
+
+sel.innerHTML="";
+
+roles.forEach((r,i)=>{
+
+let option=document.createElement("option");
+
+option.value=i;
+
+option.text=r.value || "役職"+(i+1);
+
+sel.appendChild(option);
+
+});
+
+});
+
+}
+
+function calculate(){
+
+let rows=document.querySelectorAll("#taskBody tr");
+
+let total=0;
+
+rows.forEach(row=>{
+
+let roleIndex=row.querySelector(".roleSelect").value;
+
+let wage=document.querySelectorAll(".wage")[roleIndex]?.value;
+
+let people=row.querySelector(".people").value;
+
+let freq=row.querySelector(".freq").value;
+
+let time=row.querySelector(".time").value;
+
+if(!wage)return;
+
+let cost=wage*people*(time/60)*freq;
+
+row.querySelector(".calc").innerText=Math.round(cost).toLocaleString();
+
+total+=cost;
+
+});
+
+document.getElementById("total").innerText=Math.round(total).toLocaleString();
+
+}
+
+function addRole(){
+
+let row=document.createElement("tr");
+
+row.innerHTML=`
+<td><input class="role"></td>
+<td><input type="number" class="wage"></td>
+<td><button onclick="deleteRow(this)">×</button></td>
+`;
+
+document.getElementById("roleBody").appendChild(row);
+
+updateRoleOptions();
+
+}
+
+function addTask(){
+
+let row=document.createElement("tr");
+
+row.innerHTML=`
+<td><input></td>
+<td>
+<select>
+<option>事務</option>
+<option>営業</option>
+<option>管理</option>
+<option>製造</option>
+</select>
+</td>
+<td><select class="roleSelect"></select></td>
+<td><input type="number" value="1" class="people"></td>
+<td>
+<select class="freq">
+<option value="240">毎日</option>
+<option value="52">週1</option>
+<option value="12">月1</option>
+<option value="1">年1</option>
+</select>
+</td>
+<td><input type="number" value="10" class="time"></td>
+<td class="calc">0</td>
+<td><button onclick="deleteRow(this)">×</button></td>
+`;
+
+document.getElementById("taskBody").appendChild(row);
+
+updateRoleOptions();
+
+}
+
+function deleteRow(btn){
+
+btn.closest("tr").remove();
+
+calculate();
+
+}
+
+document.addEventListener("input",()=>{
+
+updateRoleOptions();
+calculate();
+
+});
+
+updateRoleOptions();
+
+</script>
+
+</body>
+</html>
