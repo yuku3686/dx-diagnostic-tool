@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>業務損失 無料診断ツール</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --ink: #1a1a18;
@@ -24,298 +24,197 @@ body {
   padding: 40px 20px 80px;
 }
 .wrap { max-width: 960px; margin: auto; }
-
-/* Header */
-.header { border-top: 4px solid var(–ink); padding-top: 24px; margin-bottom: 32px; }
-.header-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(–accent); margin-bottom: 10px; }
-.header h1 { font-size: 26px; font-weight: 900; margin-bottom: 10px; line-height: 1.4; }
-.header h1 span { background: var(–ink); color: var(–paper); padding: 2px 8px; }
-.header p { color: var(–mid); font-size: 13px; line-height: 1.8; }
-
-/* Section box */
-.section-box {
-background: var(–white);
-border: 1px solid var(–border);
-margin-bottom: 20px;
+.header { border-top: 4px solid var(--ink); padding-top: 24px; margin-bottom: 28px; }
+.header-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
+.header h1 { font-size: 24px; font-weight: 900; margin-bottom: 10px; line-height: 1.4; }
+.header h1 span { background: var(--ink); color: var(--paper); padding: 2px 8px; }
+.header p { color: var(--mid); font-size: 13px; line-height: 1.8; }
+.sbox { background: var(--white); border: 1px solid var(--border); margin-bottom: 20px; }
+.shead {
+  background: var(--ink); color: var(--white);
+  padding: 10px 20px; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.08em; display: flex; align-items: center; gap: 10px;
 }
-.section-head {
-background: var(–ink);
-color: var(–white);
-padding: 10px 20px;
-font-size: 12px;
-font-weight: 700;
-letter-spacing: 0.1em;
-display: flex;
-align-items: center;
-gap: 10px;
-}
-.section-head .snum {
-background: var(–accent);
-padding: 2px 8px;
-font-size: 10px;
-letter-spacing: 0.15em;
-}
-.section-body { padding: 20px 24px; }
-
-/* Company fields */
-.field-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.snum { background: var(--accent); padding: 2px 8px; font-size: 10px; }
+.sbody { padding: 20px 24px; }
+.frow { display: flex; gap: 16px; flex-wrap: wrap; }
 .field { flex: 1; min-width: 180px; }
 .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-.field input {
-width: 100%;
-padding: 8px 12px;
-border: 1px solid var(–border);
-background: var(–paper);
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 13px;
-color: var(–ink);
-outline: none;
+.opt { font-weight: 400; color: #999; font-size: 11px; margin-left: 6px; }
+input[type="text"], input[type="number"] {
+  width: 100%; padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+  font-size: 13px; color: var(--ink); outline: none;
 }
-.field input:focus { border-color: var(–ink); background: var(–white); }
-
-/* Role table */
-table.role-tbl {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
-margin-bottom: 12px;
+input[type="text"]:focus, input[type="number"]:focus {
+  border-color: var(--ink); background: var(--white);
 }
-table.role-tbl thead tr { background: var(–ink); color: var(–white); }
-table.role-tbl thead th {
-padding: 8px 10px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.04em;
-text-align: left;
-border-right: 1px solid rgba(255,255,255,0.1);
+select {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+  font-size: 13px; color: var(--ink); outline: none;
 }
-table.role-tbl thead th:last-child { width: 40px; text-align: center; }
-table.role-tbl tbody tr { background: var(–white); }
-table.role-tbl tbody tr:nth-child(even) { background: #faf8f4; }
-table.role-tbl tbody td {
-padding: 5px 5px;
-border-bottom: 1px solid var(–border);
-vertical-align: middle;
+select:focus { border-color: var(--ink); background: var(--white); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--ink); color: var(--white); }
+thead th {
+  padding: 9px 8px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;
 }
-table.role-tbl tbody td input,
-table.role-tbl tbody td select {
-width: 100%;
-padding: 7px 8px;
-border: 1px solid #e0dcd4;
-background: var(–white);
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 13px;
-color: var(–ink);
-outline: none;
+thead th:first-child { text-align: left; padding-left: 12px; }
+thead th.tha { background: var(--accent); }
+tbody tr { background: var(--white); }
+tbody tr:nth-child(even) { background: #faf8f4; }
+tbody td {
+  padding: 5px 4px; border-bottom: 1px solid var(--border); vertical-align: middle;
 }
-table.role-tbl tbody td input[type=“number”] { text-align: right; }
-table.role-tbl tbody td input:focus,
-table.role-tbl tbody td select:focus { border-color: var(–ink); }
-
-/* Tasks table */
-.table-wrap { overflow-x: auto; margin-bottom: 12px; }
-table.task-tbl {
-width: 100%;
-border-collapse: collapse;
-background: var(–white);
-font-size: 13px;
-min-width: 740px;
+tbody td:first-child { padding-left: 8px; }
+tbody td input[type="text"], tbody td input[type="number"], tbody td select {
+  padding: 7px 8px; border: 1px solid #e0dcd4; background: var(--white); font-size: 13px;
 }
-table.task-tbl thead tr { background: var(–ink); color: var(–white); }
-table.task-tbl thead th {
-padding: 10px 8px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.04em;
-text-align: center;
-border-right: 1px solid rgba(255,255,255,0.1);
-white-space: nowrap;
+tbody td input[type="number"] { text-align: right; }
+td.calc {
+  text-align: center; font-weight: 700; color: var(--accent);
+  background: var(--light); white-space: nowrap; padding: 5px 8px; min-width: 76px;
 }
-table.task-tbl thead th:first-child { text-align: left; padding-left: 12px; }
-table.task-tbl thead th.th-accent { background: var(–accent); }
-table.task-tbl tbody tr { background: var(–white); }
-table.task-tbl tbody tr:nth-child(even) { background: #faf8f4; }
-table.task-tbl tbody td {
-padding: 5px 5px;
-border-bottom: 1px solid var(–border);
-vertical-align: middle;
+td.del { text-align: center; width: 34px; }
+tfoot tr { background: var(--ink); color: var(--white); }
+tfoot td { padding: 9px 8px; font-weight: 700; text-align: center; }
+tfoot td:first-child { text-align: right; padding-right: 12px; }
+tfoot td.tfa { background: var(--accent); font-size: 15px; }
+.twrap { overflow-x: auto; margin-bottom: 10px; }
+button.addbtn {
+  display: block; width: 100%; padding: 9px;
+  background: none; border: 1px dashed var(--border);
+  color: var(--mid); font-family: 'Noto Sans JP','Hiragino Sans','Meiryo',sans-serif;
+  font-size: 13px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s;
 }
-table.task-tbl tbody td:first-child { padding-left: 8px; }
-table.task-tbl tbody td input,
-table.task-tbl tbody td select {
-width: 100%;
-padding: 7px 8px;
-border: 1px solid #e0dcd4;
-background: var(–white);
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 13px;
-color: var(–ink);
-outline: none;
+button.addbtn:hover { border-color: var(--ink); color: var(--ink); background: var(--white); }
+button.delbtn {
+  width: 26px; height: 26px; background: none;
+  border: 1px solid var(--border); color: var(--mid);
+  cursor: pointer; font-size: 13px; display: block; margin: auto; transition: all 0.15s;
 }
-table.task-tbl tbody td input[type=“number”] { text-align: right; }
-table.task-tbl tbody td input:focus,
-table.task-tbl tbody td select:focus { border-color: var(–ink); }
-table.task-tbl tbody td.calc {
-text-align: center;
-font-weight: 700;
-color: var(–accent);
-background: var(–light);
-white-space: nowrap;
-padding: 5px 10px;
-min-width: 80px;
+button.delbtn:hover { background: var(--accent); border-color: var(--accent); color: var(--white); }
+button.gobtn {
+  padding: 13px 36px; background: var(--ink); color: var(--white);
+  border: none; font-family: 'Noto Sans JP','Hiragino Sans','Meiryo',sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+  margin-top: 14px; margin-bottom: 28px;
 }
-table.task-tbl tbody td.del { text-align: center; width: 36px; }
-table.task-tbl tfoot tr { background: var(–ink); color: var(–white); }
-table.task-tbl tfoot td {
-padding: 10px 8px;
-font-weight: 700;
-text-align: center;
+button.gobtn:hover { background: var(--accent); }
+.rbox { display: none; margin-top: 4px; }
+.rhero { background: var(--ink); color: var(--white); padding: 28px 24px; margin-bottom: 2px; }
+.rlbl { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
+.rhero h2 { font-size: 19px; font-weight: 900; margin-bottom: 20px; line-height: 1.4; }
+.krow { display: flex; gap: 2px; flex-wrap: wrap; }
+.kpi { flex: 1; min-width: 130px; background: rgba(255,255,255,0.07); padding: 14px 16px; }
+.kpi.ka { background: var(--accent); }
+.klbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
+.ka .klbl { color: rgba(255,255,255,0.8); }
+.kval { font-size: 24px; font-weight: 900; line-height: 1; }
+.kunit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-left: 3px; }
+.rtw { background: var(--white); border: 1px solid var(--border); border-top: none; padding: 20px; margin-bottom: 2px; overflow-x: auto; }
+.rtw h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 12px; }
+table.rt { min-width: 540px; background: transparent; }
+table.rt thead tr { background: var(--paper); }
+table.rt thead th { background: var(--paper); color: var(--mid); padding: 7px 9px; font-size: 11px; font-weight: 700; border-bottom: 2px solid var(--border); text-align: center; white-space: nowrap; }
+table.rt thead th:first-child { text-align: left; }
+table.rt tbody td { padding: 9px 9px; border-bottom: 1px solid var(--border); text-align: center; background: transparent; }
+table.rt tbody td:first-child { text-align: left; }
+table.rt tbody td.rc { font-weight: 700; color: var(--accent); }
+table.rt tbody td.rr { font-weight: 900; font-size: 14px; }
+table.rt tfoot td { background: var(--ink); color: var(--white); padding: 9px 9px; font-weight: 700; text-align: center; }
+table.rt tfoot td:first-child { text-align: left; }
+table.rt tfoot td.rfa { background: var(--accent); font-size: 14px; }
+.note { font-size: 11px; color: var(--mid); line-height: 1.7; margin-top: 10px; }
+.ctabox { border: 2px solid var(--accent); background: var(--white); padding: 24px; margin-top: 2px; }
+.ctabox h3 { font-size: 15px; font-weight: 900; margin-bottom: 8px; }
+.ctabox p { font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 18px; }
+.ctabtn {
+  display: block; width: 100%; padding: 14px;
+  background: var(--accent); color: var(--white); border: none;
+  font-family: 'Noto Sans JP','Hiragino Sans','Meiryo',sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; text-align: center;
 }
-table.task-tbl tfoot td:first-child { text-align: right; padding-right: 12px; }
-table.task-tbl tfoot td.tf-accent { background: var(–accent); font-size: 16px; }
-
-/* Buttons */
-button.add-btn {
-display: block;
-width: 100%;
-padding: 10px;
-background: none;
-border: 1px dashed var(–border);
-color: var(–mid);
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 13px;
-cursor: pointer;
-margin-bottom: 8px;
-transition: all 0.2s;
-}
-button.add-btn:hover { border-color: var(–ink); color: var(–ink); background: var(–white); }
-button.del-btn {
-width: 28px; height: 28px;
-background: none;
-border: 1px solid var(–border);
-color: var(–mid);
-cursor: pointer;
-font-size: 14px;
-display: flex;
-align-items: center;
-justify-content: center;
-margin: auto;
-transition: all 0.15s;
-}
-button.del-btn:hover { background: var(–accent); border-color: var(–accent); color: var(–white); }
-button.calc-btn {
-padding: 14px 40px;
-background: var(–ink);
-color: var(–white);
-border: none;
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 14px;
-font-weight: 700;
-cursor: pointer;
-transition: background 0.2s;
-margin-top: 16px;
-margin-bottom: 32px;
-}
-button.calc-btn:hover { background: var(–accent); }
-
-/* Result */
-.result-box { display: none; margin-top: 8px; }
-.result-hero { background: var(–ink); color: var(–white); padding: 32px 28px; margin-bottom: 2px; }
-.result-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(–accent); margin-bottom: 12px; }
-.result-hero h2 { font-size: 20px; font-weight: 900; margin-bottom: 24px; line-height: 1.4; }
-.kpi-row { display: flex; gap: 2px; flex-wrap: wrap; }
-.kpi { flex: 1; min-width: 140px; background: rgba(255,255,255,0.07); padding: 16px 18px; }
-.kpi.kpi-accent { background: var(–accent); }
-.kpi-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
-.kpi-accent .kpi-lbl { color: rgba(255,255,255,0.8); }
-.kpi-val { font-size: 26px; font-weight: 900; line-height: 1; }
-.kpi-unit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-left: 3px; }
-.result-table-wrap {
-background: var(–white);
-border: 1px solid var(–border);
-border-top: none;
-padding: 24px 20px;
-margin-bottom: 2px;
-overflow-x: auto;
-}
-.result-table-wrap h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(–mid); margin-bottom: 14px; }
-table.rtbl {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
-min-width: 560px;
-background: transparent;
-}
-table.rtbl thead tr { background: var(–paper); }
-table.rtbl thead th {
-background: var(–paper);
-color: var(–mid);
-padding: 8px 10px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.04em;
-border-bottom: 2px solid var(–border);
-text-align: center;
-white-space: nowrap;
-}
-table.rtbl thead th:first-child { text-align: left; }
-table.rtbl tbody td {
-padding: 10px 10px;
-border-bottom: 1px solid var(–border);
-text-align: center;
-background: transparent;
-}
-table.rtbl tbody td:first-child { text-align: left; }
-table.rtbl tbody td.rcost { font-weight: 700; color: var(–accent); }
-table.rtbl tbody td.rrank { font-weight: 900; font-size: 15px; }
-table.rtbl tfoot td {
-background: var(–ink);
-color: var(–white);
-padding: 10px 10px;
-font-weight: 700;
-text-align: center;
-}
-table.rtbl tfoot td:first-child { text-align: left; }
-table.rtbl tfoot td.rf-accent { background: var(–accent); font-size: 15px; }
-.note { font-size: 11px; color: var(–mid); line-height: 1.7; margin-top: 12px; }
-.cta-box { border: 2px solid var(–accent); background: var(–white); padding: 28px 24px; margin-top: 2px; }
-.cta-box h3 { font-size: 16px; font-weight: 900; margin-bottom: 10px; }
-.cta-box p { font-size: 13px; color: var(–mid); line-height: 1.7; margin-bottom: 20px; }
-.cta-btn {
-display: block; width: 100%; padding: 16px;
-background: var(–accent); color: var(–white);
-border: none;
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s;
-}
-.cta-btn:hover { background: #a33214; }
-.cta-note { font-size: 11px; color: var(–mid); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(–border); line-height: 1.6; }
+.ctabtn:hover { background: #a33214; }
+.ctanote { font-size: 11px; color: var(--mid); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.6; }
 </style>
-
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Header -->
+<div class="header">
+  <div class="header-tag">無料診断 / 所要時間 約5〜10分</div>
+  <h1><span>御社のルーティン業務</span>は<br>年間いくらのコストを生んでいますか？</h1>
+  <p>業務ごとに担当役職・頻度・作業時間を入力するだけで、損失コストと自動化シミュレーションを一覧で確認できます。</p>
+</div>
 
-  <div class="header">
-    <div class="header-tag">無料診断 / 所要時間 約5〜10分</div>
-    <h1><span>御社のルーティン業務</span>は<br>年間いくらのコストを生んでいますか？</h1>
-    <p>業務ごとに担当役職・頻度・作業時間を入力するだけで、損失コストと自動化シミュレーションを一覧で確認できます。</p>
-  </div>
+<!-- STEP 1 -->
 
-  <!-- SECTION 1: Company -->
-
-  <div class="section-box">
-    <div class="section-head">
-      <span class="snum">STEP 01</span>会社・担当者の基本情報
+<div class="sbox">
+  <div class="shead"><span class="snum">STEP 01</span>会社・担当者の基本情報</div>
+  <div class="sbody">
+    <div class="frow">
+      <div class="field">
+        <label>会社名<span class="opt">任意</span></label>
+        <input type="text" id="cname" placeholder="例：○○製作所">
+      </div>
+      <div class="field">
+        <label>部署名<span class="opt">任意</span></label>
+        <input type="text" id="dname" placeholder="例：総務部">
+      </div>
     </div>
-    <div class="section-body">
-      <div class="field-row">
-        <div class="field">
-          <label>会社名　<span style="font-weight:400;color:#999;font-size:11px;">任意</span></label>
-          <input type="text" id="company-name" placeholder="例：○○製作所">
-        </div>
-        <div class="field">
-          <label>部署名　<span style="font-weight:400;color:#999;font-size:11px;">任意</span></label>
-          <input type="text" id="dept-name" placeholde
+  </div>
+</div>
+
+<!-- STEP 2 -->
+
+<div class="sbox">
+  <div class="shead">
+    <span class="snum">STEP 02</span>役職と時給の設定
+    <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.6);">STEP03の担当役職プルダウンに反映されます</span>
+  </div>
+  <div class="sbody">
+    <div class="twrap">
+      <table id="rtable">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px;">役職名</th>
+            <th style="min-width:160px;text-align:left;">時給（円）</th>
+            <th style="width:34px;"></th>
+          </tr>
+        </thead>
+        <tbody id="rbody">
+          <tr id="rr1">
+            <td><input type="text" id="rn1" placeholder="例：一般スタッフ" oninput="syncRoles()"></td>
+            <td><input type="number" id="rw1" value="1500" min="1" oninput="syncRoles()" style="width:120px"></td>
+            <td><button class="delbtn" onclick="delRole('rr1')">x</button></td>
+          </tr>
+          <tr id="rr2">
+            <td><input type="text" id="rn2" placeholder="例：管理職" oninput="syncRoles()"></td>
+            <td><input type="number" id="rw2" value="2500" min="1" oninput="syncRoles()" style="width:120px"></td>
+            <td><button class="delbtn" onclick="delRole('rr2')">x</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="addbtn" onclick="addRole()">+ 役職を追加する</button>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+
+<div class="sbox">
+  <div class="shead"><span class="snum">STEP 03</span>ルーティン業務の入力</div>
+  <div class="sbody">
+    <div class="twrap">
+      <table id="ttable">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:130px;">業務名</th>
