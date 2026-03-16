@@ -5,610 +5,317 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>業務損失 無料診断ツール</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --ink: #1a1a18;
   --paper: #f5f2eb;
   --accent: #c8401a;
-  --mid: #6b6860;
   --border: #d6d0c4;
   --white: #ffffff;
   --light: #f0e8e3;
-  --success: #2a6b3c;
-  --row-alt: #faf8f4;
+  --mid: #6b6860;
 }
-
-- {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  }
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-background: var(–paper);
-color: var(–ink);
-font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-min-height: 100vh;
-overflow-x: hidden;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 40px 20px 80px;
 }
-
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image: repeating-linear-gradient(
-0deg, transparent, transparent 39px,
-rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px
-);
-pointer-events: none;
-z-index: 0;
-}
-
-.wrap {
-max-width: 900px;
-margin: 0 auto;
-padding: 48px 20px 100px;
-position: relative;
-z-index: 1;
-}
+.wrap { max-width: 960px; margin: auto; }
 
 /* Header */
-.header {
-border-top: 4px solid var(–ink);
-padding: 32px 0 28px;
-margin-bottom: 40px;
-}
+.header { border-top: 4px solid var(–ink); padding-top: 24px; margin-bottom: 32px; }
+.header-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(–accent); margin-bottom: 10px; }
+.header h1 { font-size: 26px; font-weight: 900; margin-bottom: 10px; line-height: 1.4; }
+.header h1 span { background: var(–ink); color: var(–paper); padding: 2px 8px; }
+.header p { color: var(–mid); font-size: 13px; line-height: 1.8; }
 
-.header-tag {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.2em;
-color: var(–accent);
-margin-bottom: 12px;
-}
-
-.header h1 {
-font-weight: 900;
-font-size: 28px;
-line-height: 1.4;
-margin-bottom: 14px;
-}
-
-.header h1 mark {
-background: var(–ink);
-color: var(–paper);
-padding: 0 8px;
-}
-
-.header p {
-font-size: 13px;
-color: var(–mid);
-line-height: 1.8;
-}
-
-/* Step nav */
-.stepnav {
-display: flex;
-margin-bottom: 36px;
-border-bottom: 1px solid var(–border);
-}
-
-.stepnav-item {
-flex: 1;
-text-align: center;
-padding: 10px 4px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.05em;
-color: var(–border);
-border-bottom: 3px solid transparent;
-margin-bottom: -1px;
-transition: all 0.3s;
-}
-
-.stepnav-item.active {
-color: var(–accent);
-border-bottom-color: var(–accent);
-}
-
-.stepnav-item.done {
-color: var(–success);
-border-bottom-color: var(–success);
-}
-
-/* Panel */
-.panel {
-display: none;
-}
-
-.panel.active {
-display: block;
-animation: fadeUp 0.35s ease forwards;
-}
-
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(14px); }
-to   { opacity: 1; transform: translateY(0); }
-}
-
-.panel-head {
-background: var(–ink);
-color: var(–white);
-padding: 18px 24px;
-display: flex;
-align-items: flex-start;
-gap: 14px;
-}
-
-.panel-head-num {
-background: var(–accent);
-color: white;
-font-size: 10px;
-font-weight: 700;
-letter-spacing: 0.15em;
-padding: 4px 10px;
-flex-shrink: 0;
-margin-top: 2px;
-}
-
-.panel-head h2 {
-font-size: 15px;
-font-weight: 700;
-line-height: 1.4;
-}
-
-.panel-head p {
-font-size: 12px;
-color: rgba(255,255,255,0.6);
-margin-top: 3px;
-}
-
-.panel-body {
+/* Section box */
+.section-box {
 background: var(–white);
 border: 1px solid var(–border);
-border-top: none;
-padding: 28px 24px 24px;
-}
-
-/* Form fields */
-.field-row {
-display: flex;
-gap: 16px;
 margin-bottom: 20px;
-flex-wrap: wrap;
 }
-
-.field {
-flex: 1;
-min-width: 200px;
-}
-
-.field label {
-display: block;
+.section-head {
+background: var(–ink);
+color: var(–white);
+padding: 10px 20px;
 font-size: 12px;
 font-weight: 700;
-margin-bottom: 6px;
+letter-spacing: 0.1em;
+display: flex;
+align-items: center;
+gap: 10px;
 }
-
-.field label .opt {
-font-weight: 400;
-color: var(–mid);
-font-size: 11px;
-margin-left: 6px;
+.section-head .snum {
+background: var(–accent);
+padding: 2px 8px;
+font-size: 10px;
+letter-spacing: 0.15em;
 }
+.section-body { padding: 20px 24px; }
 
-input[type=“text”],
-input[type=“number”],
-select {
+/* Company fields */
+.field-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.field { flex: 1; min-width: 180px; }
+.field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.field input {
 width: 100%;
-padding: 10px 14px;
+padding: 8px 12px;
 border: 1px solid var(–border);
 background: var(–paper);
 font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
-font-size: 14px;
+font-size: 13px;
 color: var(–ink);
 outline: none;
-border-radius: 0;
--webkit-appearance: none;
-transition: border-color 0.2s, background 0.2s;
 }
+.field input:focus { border-color: var(–ink); background: var(–white); }
 
-input:focus,
-select:focus {
-border-color: var(–ink);
-background: var(–white);
-}
-
-select {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘7’%3E%3Cpath d=‘M0 0l5 6 5-6z’ fill=’%231a1a18’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 14px center;
-padding-right: 36px;
-cursor: pointer;
-}
-
-/* Role section */
-.role-section {
-background: var(–paper);
-border: 1px solid var(–border);
-padding: 20px;
-margin-bottom: 20px;
-}
-
-.role-section h3 {
-font-size: 13px;
-font-weight: 700;
-margin-bottom: 14px;
-color: var(–mid);
-letter-spacing: 0.05em;
-}
-
-.role-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-gap: 8px;
-}
-
-.role-item {
-position: relative;
-}
-
-.role-item input[type=“radio”] {
-position: absolute;
-opacity: 0;
-width: 0;
-}
-
-.role-item label {
-display: block;
-padding: 10px 14px;
-border: 1px solid var(–border);
-cursor: pointer;
-font-size: 13px;
-font-weight: 400;
-background: var(–white);
-transition: all 0.15s;
-margin: 0;
-line-height: 1.5;
-}
-
-.role-item input:checked + label {
-background: var(–ink);
-color: white;
-border-color: var(–ink);
-}
-
-/* Tasks table */
-.tasks-table-wrap {
-overflow-x: auto;
-margin-bottom: 16px;
-}
-
-table.tasks {
+/* Role table */
+table.role-tbl {
 width: 100%;
 border-collapse: collapse;
 font-size: 13px;
-min-width: 680px;
+margin-bottom: 12px;
 }
-
-table.tasks thead tr {
-background: var(–ink);
-color: var(–white);
+table.role-tbl thead tr { background: var(–ink); color: var(–white); }
+table.role-tbl thead th {
+padding: 8px 10px;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.04em;
+text-align: left;
+border-right: 1px solid rgba(255,255,255,0.1);
 }
+table.role-tbl thead th:last-child { width: 40px; text-align: center; }
+table.role-tbl tbody tr { background: var(–white); }
+table.role-tbl tbody tr:nth-child(even) { background: #faf8f4; }
+table.role-tbl tbody td {
+padding: 5px 5px;
+border-bottom: 1px solid var(–border);
+vertical-align: middle;
+}
+table.role-tbl tbody td input,
+table.role-tbl tbody td select {
+width: 100%;
+padding: 7px 8px;
+border: 1px solid #e0dcd4;
+background: var(–white);
+font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
+font-size: 13px;
+color: var(–ink);
+outline: none;
+}
+table.role-tbl tbody td input[type=“number”] { text-align: right; }
+table.role-tbl tbody td input:focus,
+table.role-tbl tbody td select:focus { border-color: var(–ink); }
 
-table.tasks thead th {
+/* Tasks table */
+.table-wrap { overflow-x: auto; margin-bottom: 12px; }
+table.task-tbl {
+width: 100%;
+border-collapse: collapse;
+background: var(–white);
+font-size: 13px;
+min-width: 740px;
+}
+table.task-tbl thead tr { background: var(–ink); color: var(–white); }
+table.task-tbl thead th {
 padding: 10px 8px;
 font-size: 11px;
 font-weight: 700;
 letter-spacing: 0.04em;
 text-align: center;
-white-space: nowrap;
 border-right: 1px solid rgba(255,255,255,0.1);
+white-space: nowrap;
 }
-
-table.tasks thead th:first-child {
-text-align: left;
-padding-left: 12px;
-}
-
-table.tasks thead th.accent-col {
-background: var(–accent);
-}
-
-table.tasks tbody tr {
-background: var(–white);
-}
-
-table.tasks tbody tr:nth-child(even) {
-background: var(–row-alt);
-}
-
-table.tasks tbody td {
-padding: 5px;
+table.task-tbl thead th:first-child { text-align: left; padding-left: 12px; }
+table.task-tbl thead th.th-accent { background: var(–accent); }
+table.task-tbl tbody tr { background: var(–white); }
+table.task-tbl tbody tr:nth-child(even) { background: #faf8f4; }
+table.task-tbl tbody td {
+padding: 5px 5px;
 border-bottom: 1px solid var(–border);
 vertical-align: middle;
 }
-
-table.tasks tbody td:first-child {
-padding-left: 8px;
-}
-
-table.tasks tbody td input[type=“text”],
-table.tasks tbody td input[type=“number”],
-table.tasks tbody td select {
-padding: 8px 10px;
-font-size: 13px;
+table.task-tbl tbody td:first-child { padding-left: 8px; }
+table.task-tbl tbody td input,
+table.task-tbl tbody td select {
+width: 100%;
+padding: 7px 8px;
+border: 1px solid #e0dcd4;
 background: var(–white);
-border-color: #e8e4dc;
+font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
+font-size: 13px;
+color: var(–ink);
+outline: none;
 }
-
-table.tasks tbody td input[type=“number”] {
-text-align: right;
-}
-
-table.tasks tbody td.calc-cell {
+table.task-tbl tbody td input[type=“number”] { text-align: right; }
+table.task-tbl tbody td input:focus,
+table.task-tbl tbody td select:focus { border-color: var(–ink); }
+table.task-tbl tbody td.calc {
 text-align: center;
 font-weight: 700;
-font-size: 13px;
 color: var(–accent);
 background: var(–light);
 white-space: nowrap;
-min-width: 72px;
+padding: 5px 10px;
+min-width: 80px;
 }
-
-table.tasks tbody td.del-cell {
-text-align: center;
-width: 36px;
-}
-
-.btn-del {
-background: none;
-border: 1px solid var(–border);
-color: var(–mid);
-width: 28px;
-height: 28px;
-cursor: pointer;
-font-size: 16px;
-line-height: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: all 0.15s;
-margin: 0 auto;
-}
-
-.btn-del:hover {
-background: var(–accent);
-border-color: var(–accent);
-color: white;
-}
-
-.total-row td {
-background: var(–ink) !important;
-color: white !important;
+table.task-tbl tbody td.del { text-align: center; width: 36px; }
+table.task-tbl tfoot tr { background: var(–ink); color: var(–white); }
+table.task-tbl tfoot td {
+padding: 10px 8px;
 font-weight: 700;
-padding: 10px 8px !important;
-border: none !important;
 text-align: center;
 }
+table.task-tbl tfoot td:first-child { text-align: right; padding-right: 12px; }
+table.task-tbl tfoot td.tf-accent { background: var(–accent); font-size: 16px; }
 
-.total-row td:first-child {
-text-align: right;
-padding-right: 12px !important;
-}
-
-.total-row td.accent-total {
-background: var(–accent) !important;
-font-size: 15px;
-}
-
-.btn-add-row {
-display: flex;
-align-items: center;
-gap: 8px;
-padding: 10px 20px;
+/* Buttons */
+button.add-btn {
+display: block;
+width: 100%;
+padding: 10px;
 background: none;
 border: 1px dashed var(–border);
 color: var(–mid);
 font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
 font-size: 13px;
 cursor: pointer;
+margin-bottom: 8px;
 transition: all 0.2s;
-width: 100%;
-justify-content: center;
-margin-bottom: 20px;
 }
-
-.btn-add-row:hover {
-border-color: var(–ink);
-color: var(–ink);
-background: var(–paper);
-}
-
-/* Buttons */
-.btn {
-display: inline-flex;
+button.add-btn:hover { border-color: var(–ink); color: var(–ink); background: var(–white); }
+button.del-btn {
+width: 28px; height: 28px;
+background: none;
+border: 1px solid var(–border);
+color: var(–mid);
+cursor: pointer;
+font-size: 14px;
+display: flex;
 align-items: center;
-gap: 8px;
-padding: 13px 28px;
+justify-content: center;
+margin: auto;
+transition: all 0.15s;
+}
+button.del-btn:hover { background: var(–accent); border-color: var(–accent); color: var(–white); }
+button.calc-btn {
+padding: 14px 40px;
+background: var(–ink);
+color: var(–white);
+border: none;
 font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
 font-size: 14px;
 font-weight: 700;
 cursor: pointer;
-border: none;
-transition: all 0.2s;
+transition: background 0.2s;
+margin-top: 16px;
+margin-bottom: 32px;
 }
-
-.btn-primary {
-background: var(–ink);
-color: white;
-}
-
-.btn-primary:hover {
-background: var(–accent);
-}
-
-.btn-secondary {
-background: transparent;
-color: var(–mid);
-border: 1px solid var(–border);
-font-size: 13px;
-padding: 11px 20px;
-}
-
-.btn-secondary:hover {
-border-color: var(–ink);
-color: var(–ink);
-}
-
-.btn-row {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-flex-wrap: wrap;
-}
-
-.btn-row .btn-primary {
-flex: 1;
-justify-content: center;
-min-width: 160px;
-}
+button.calc-btn:hover { background: var(–accent); }
 
 /* Result */
-.result-wrap {
-display: none;
-}
-
-.result-wrap.active {
-display: block;
-animation: fadeUp 0.4s ease;
-}
-
-.result-hero {
-background: var(–ink);
-color: white;
-padding: 36px 28px 28px;
-margin-bottom: 2px;
-}
-
-.result-hero-label {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.2em;
-color: var(–accent);
-margin-bottom: 14px;
-}
-
-.result-hero h2 {
-font-size: 21px;
-font-weight: 900;
-line-height: 1.4;
-margin-bottom: 24px;
-}
-
-.kpi-grid {
-display: grid;
-grid-template-columns: 1fr 1fr 1fr;
-gap: 2px;
-}
-
-.kpi-item {
-background: rgba(255,255,255,0.07);
-padding: 18px 20px;
-}
-
-.kpi-item.highlight {
-background: var(–accent);
-}
-
-.kpi-label {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 0.08em;
-color: rgba(255,255,255,0.5);
-margin-bottom: 8px;
-}
-
-.kpi-item.highlight .kpi-label {
-color: rgba(255,255,255,0.8);
-}
-
-.kpi-value {
-font-size: 28px;
-font-weight: 900;
-line-height: 1;
-letter-spacing: -0.02em;
-}
-
-.kpi-unit {
-font-size: 13px;
-font-weight: 400;
-color: rgba(255,255,255,0.6);
-margin-left: 4px;
-}
-
+.result-box { display: none; margin-top: 8px; }
+.result-hero { background: var(–ink); color: var(–white); padding: 32px 28px; margin-bottom: 2px; }
+.result-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(–accent); margin-bottom: 12px; }
+.result-hero h2 { font-size: 20px; font-weight: 900; margin-bottom: 24px; line-height: 1.4; }
+.kpi-row { display: flex; gap: 2px; flex-wrap: wrap; }
+.kpi { flex: 1; min-width: 140px; background: rgba(255,255,255,0.07); padding: 16px 18px; }
+.kpi.kpi-accent { background: var(–accent); }
+.kpi-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.kpi-accent .kpi-lbl { color: rgba(255,255,255,0.8); }
+.kpi-val { font-size: 26px; font-weight: 900; line-height: 1; }
+.kpi-unit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-left: 3px; }
 .result-table-wrap {
 background: var(–white);
 border: 1px solid var(–border);
 border-top: none;
 padding: 24px 20px;
 margin-bottom: 2px;
+overflow-x: auto;
 }
-
-.result-table-wrap h3 {
-font-size: 13px;
-font-weight: 700;
-color: var(–mid);
-letter-spacing: 0.08em;
-margin-bottom: 16px;
-}
-
-table.result-tbl {
+.result-table-wrap h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(–mid); margin-bottom: 14px; }
+table.rtbl {
 width: 100%;
 border-collapse: collapse;
 font-size: 13px;
 min-width: 560px;
+background: transparent;
 }
-
-table.result-tbl thead th {
+table.rtbl thead tr { background: var(–paper); }
+table.rtbl thead th {
 background: var(–paper);
-padding: 8px 12px;
+color: var(–mid);
+padding: 8px 10px;
 font-size: 11px;
 font-weight: 700;
 letter-spacing: 0.04em;
-color: var(–mid);
-text-align: center;
 border-bottom: 2px solid var(–border);
+text-align: center;
 white-space: nowrap;
 }
-
-table.result-tbl thead th:first-child {
-text-align: left;
-}
-
-table.result-tbl tbody td {
-padding: 10px 12px;
+table.rtbl thead th:first-child { text-align: left; }
+table.rtbl tbody td {
+padding: 10px 10px;
 border-bottom: 1px solid var(–border);
 text-align: center;
+background: transparent;
 }
-
-table.result-tbl tbody td:first-child {
-text-align: left;
-}
-
-table.result-tbl tbody td.cost-cell {
-font-weight: 700;
-color: var(–accent);
-}
-
-table.result-tbl tbody td.rank-cell {
-font-weight: 900;
-font-size: 15px;
-}
-
-table.result-tbl tfoot td {
+table.rtbl tbody td:first-child { text-align: left; }
+table.rtbl tbody td.rcost { font-weight: 700; color: var(–accent); }
+table.rtbl tbody td.rrank { font-weight: 900; font-size: 15px; }
+table.rtbl tfoot td {
 background: var(–ink);
-color: white
+color: var(–white);
+padding: 10px 10px;
+font-weight: 700;
+text-align: center;
+}
+table.rtbl tfoot td:first-child { text-align: left; }
+table.rtbl tfoot td.rf-accent { background: var(–accent); font-size: 15px; }
+.note { font-size: 11px; color: var(–mid); line-height: 1.7; margin-top: 12px; }
+.cta-box { border: 2px solid var(–accent); background: var(–white); padding: 28px 24px; margin-top: 2px; }
+.cta-box h3 { font-size: 16px; font-weight: 900; margin-bottom: 10px; }
+.cta-box p { font-size: 13px; color: var(–mid); line-height: 1.7; margin-bottom: 20px; }
+.cta-btn {
+display: block; width: 100%; padding: 16px;
+background: var(–accent); color: var(–white);
+border: none;
+font-family: ‘Noto Sans JP’, ‘Hiragino Sans’, ‘Meiryo’, sans-serif;
+font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+}
+.cta-btn:hover { background: #a33214; }
+.cta-note { font-size: 11px; color: var(–mid); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(–border); line-height: 1.6; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+
+  <div class="header">
+    <div class="header-tag">無料診断 / 所要時間 約5〜10分</div>
+    <h1><span>御社のルーティン業務</span>は<br>年間いくらのコストを生んでいますか？</h1>
+    <p>業務ごとに担当役職・頻度・作業時間を入力するだけで、損失コストと自動化シミュレーションを一覧で確認できます。</p>
+  </div>
+
+  <!-- SECTION 1: Company -->
+
+  <div class="section-box">
+    <div class="section-head">
+      <span class="snum">STEP 01</span>会社・担当者の基本情報
+    </div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field">
+          <label>会社名　<span style="font-weight:400;color:#999;font-size:11px;">任意</span></label>
+          <input type="text" id="company-name" placeholder="例：○○製作所">
+        </div>
+        <div class="field">
+          <label>部署名　<span style="font-weight:400;color:#999;font-size:11px;">任意</span></label>
+          <input type="text" id="dept-name" placeholde
