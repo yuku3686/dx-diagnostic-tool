@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>診断結果</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Noto Sans JP',sans-serif;
+background:#f5f2eb;
+padding:30px;
+color:#1a1a18;
+}
+
+.wrap{
+max-width:900px;
+margin:auto;
+}
+
+.section{
+background:white;
+padding:24px;
+margin-bottom:20px;
+border:1px solid #ddd;
+}
+
+.hero{
+background:#1a1a18;
+color:white;
+text-align:center;
+padding:30px;
+}
+
+.big{
+font-size:36px;
+font-weight:900;
+color:#c8401a;
+}
+
+.white-big{
+font-size:36px;
+font-weight:900;
+color:white;
+}
+
+.cta{
+text-align:center;
+margin-top:30px;
+}
+
+button{
+padding:16px 30px;
+font-size:16px;
+border:none;
+background:#c8401a;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.8;
+}
+
+.form-box{
+display:none;
+margin-top:30px;
+padding:20px;
+background:white;
+border:2px solid #1a1a18;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border:1px solid #ccc;
+}
+
+.submit{
+background:#1a1a18;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<!-- ヒーロー -->
+<div class="hero">
+
+<p>診断結果</p>
+
+<p class="white-big" id="total"></p>
+
+<p id="future"></p>
+
+</div>
+
+<!-- 内訳 -->
+<div class="section">
+<h3>最もコストの高い業務</h3>
+<p id="topTask"></p>
+</div>
+
+<!-- 示唆 -->
+<div class="section">
+<h3>経営への示唆</h3>
+<p>
+多くの場合、問題は人ではなく「業務の仕組み」にあります。<br>
+この損失の30〜60%は削減可能です。
+</p>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+
+<p>この損失を削減する方法を無料でご提案します</p>
+
+<button onclick="openForm()">無料で相談する</button>
+
+</div>
+
+<!-- フォーム -->
+<div class="form-box" id="formBox">
+
+<h3>無料相談フォーム</h3>
+
+<input type="text" id="company" placeholder="会社名">
+
+<input type="text" placeholder="担当者名">
+
+<input type="email" placeholder="メールアドレス">
+
+<input type="text" placeholder="電話番号（任意）">
+
+<textarea id="message" rows="5"></textarea>
+
+<button class="submit" onclick="submitForm()">送信する</button>
+
+</div>
+
+</div>
+
+<script>
+
+const params=new URLSearchParams(location.search);
+
+const total=parseFloat(params.get("total"))||0;
+const top=params.get("top")||"";
+const company=params.get("company")||"";
+
+document.getElementById("total").innerText=
+"年間 "+Math.round(total).toLocaleString()+" 円の損失";
+
+document.getElementById("future").innerText=
+"5年間で "+Math.round(total*5).toLocaleString()+" 円の損失になります";
+
+document.getElementById("topTask").innerText=top;
+
+document.getElementById("company").value=company;
+
+// 自動メッセージ生成
+document.getElementById("message").value =
+"【診断結果】\n"+
+"年間損失："+Math.round(total).toLocaleString()+"円\n"+
+"最大コスト業務："+top+"\n\n"+
+"改善提案を希望します。";
+
+function openForm(){
+document.getElementById("formBox").style.display="block";
+document.getElementById("formBox").scrollIntoView({behavior:"smooth"});
+}
+
+function submitForm(){
+
+alert("送信処理はGoogleフォームやメール連携を実装してください");
+
+}
+
+</script>
+
+</body>
+</html>
