@@ -7,83 +7,170 @@
 <style>
 body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
 .section{background:#fff;padding:16px;margin-bottom:16px;border:1px solid #ccc;}
-input,select{padding:6px;width:100%;}
-button{padding:8px 16px;margin-top:8px;}
 
-.role-row,.role-header{
+.desc{
+font-size:13px;
+color:#555;
+margin-bottom:10px;
+line-height:1.6;
+}
+
+input,select{
+padding:6px;
+width:100%;
+font-size:14px;
+}
+
+button{
+padding:10px 20px;
+margin-top:10px;
+cursor:pointer;
+}
+
+/* STEP3 */
+.role-header,.role-row{
 display:grid;
 grid-template-columns:1fr 1fr 60px;
 gap:6px;
 align-items:center;
 }
-.task-row,.task-header{
+
+.role-header{
+font-weight:bold;
+margin-bottom:4px;
+}
+
+.role-row{
+background:#fafafa;
+padding:6px;
+border:1px solid #ddd;
+margin-bottom:6px;
+}
+
+/* STEP4 */
+.task-header,.task-row{
 display:grid;
-grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
+grid-template-columns:1.5fr 1fr 0.6fr 1fr 1fr 60px;
 gap:6px;
 align-items:center;
 }
-.delete-btn{height:30px;}
+
+.task-header{
+font-weight:bold;
+margin-bottom:4px;
+}
+
+.task-row{
+background:#fafafa;
+padding:6px;
+border:1px solid #ddd;
+margin-bottom:6px;
+}
+
+.delete-btn{
+height:30px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>業務コスト診断</h2>
+<h2>業務コスト診断ツール</h2>
 
+<!-- STEP1 -->
 <div class="section">
-<h3>会社名</h3>
+<h3>STEP01 会社名</h3>
+<div class="desc">
+貴社名をご入力ください。診断結果に表示されます。
+</div>
 <input id="company">
 </div>
 
+<!-- STEP2 -->
 <div class="section">
-<h3>部署</h3>
+<h3>STEP02 部署名（任意）</h3>
+<div class="desc">
+対象とする部署があればご入力ください（例：営業部、管理部など）
+</div>
 <input id="dept">
 </div>
 
+<!-- STEP3 -->
 <div class="section">
-<h3>役職</h3>
+<h3>STEP03 担当区分と人件費</h3>
+<div class="desc">
+業務に関わる人の区分と、その時間あたりの人件費をご入力ください。<br>
+例：営業担当 1500円、営業事務 1200円、経理 1300円 など
+</div>
+
+<div class="role-header">
+<div>担当区分</div>
+<div>時給（円）</div>
+<div></div>
+</div>
+
 <div id="roles"></div>
+
 <button onclick="addRole()">追加</button>
 </div>
 
+<!-- STEP4 -->
 <div class="section">
-<h3>業務</h3>
+<h3>STEP04 業務内容</h3>
+<div class="desc">
+日々行っている業務について入力してください。<br>
+「誰が・どれくらいの頻度で・どれくらい時間を使っているか」を整理します。
+</div>
+
+<div class="task-header">
+<div>業務名</div>
+<div>担当区分</div>
+<div>人数</div>
+<div>頻度</div>
+<div>時間(分)</div>
+<div></div>
+</div>
+
 <div id="tasks"></div>
+
 <button onclick="addTask()">追加</button>
 </div>
 
-<button onclick="calculate()">診断</button>
+<button onclick="calculate()">診断結果を見る</button>
 
 <script>
 
 let roles=[];
 
+/* STEP3 */
 function addRole(){
 const id=Date.now();
 roles.push(id);
 
 document.getElementById("roles").insertAdjacentHTML("beforeend",`
 <div class="role-row">
-<input id="role_${id}" placeholder="役職">
-<input id="wage_${id}" type="number" placeholder="時給">
-<button onclick="removeRole(${id},this)">削除</button>
+<input id="role_${id}" placeholder="営業担当">
+<input id="wage_${id}" type="number" placeholder="1500">
+<button class="delete-btn" onclick="removeRole(${id},this)">削除</button>
 </div>
 `);
+
+document.getElementById("role_"+id).addEventListener("input", updateRoles);
 }
 
 function removeRole(id,btn){
 roles=roles.filter(r=>r!==id);
 btn.parentElement.remove();
+updateRoles();
 }
 
-/* 業務 */
+/* STEP4 */
 function addTask(){
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <div class="task-row">
-<input class="taskName">
-<input class="taskType">
+<input class="taskName" placeholder="請求書作成">
 <select class="taskRole"></select>
-<input class="taskPeople" type="number">
+<input class="taskPeople" type="number" placeholder="1">
 <select class="taskFreq">
 <option value="20">日次</option>
 <option value="1">月次</option>
@@ -91,26 +178,36 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <option value="0.17">半年</option>
 <option value="0.08">年次</option>
 </select>
-<input class="taskTime" type="number">
-<button onclick="this.parentElement.remove()">削除</button>
+<input class="taskTime" type="number" placeholder="30">
+<button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
 </div>
 `);
+
 updateRoles();
 }
 
+/* 役職反映 */
 function updateRoles(){
+
 const names=roles.map(id=>{
 return document.getElementById("role_"+id)?.value || "";
 }).filter(v=>v);
 
 document.querySelectorAll(".taskRole").forEach(sel=>{
+
+const current=sel.value;
 sel.innerHTML="";
+
 names.forEach(n=>{
 const opt=document.createElement("option");
 opt.value=n;
 opt.textContent=n;
 sel.appendChild(opt);
 });
+
+if(names.includes(current)){
+sel.value=current;
+}
 });
 }
 
@@ -123,6 +220,7 @@ let roleList=[];
 roles.forEach(id=>{
 const name=document.getElementById("role_"+id).value;
 const wage=parseFloat(document.getElementById("wage_"+id).value||0);
+
 if(name){
 roleMap[name]=wage;
 roleList.push({name,wage});
@@ -137,7 +235,6 @@ let topTask="";
 document.querySelectorAll(".task-row").forEach(row=>{
 
 const name=row.querySelector(".taskName").value;
-const type=row.querySelector(".taskType").value;
 const role=row.querySelector(".taskRole").value;
 const people=parseFloat(row.querySelector(".taskPeople").value||0);
 const freq=parseFloat(row.querySelector(".taskFreq").value||0);
@@ -145,7 +242,7 @@ const time=parseFloat(row.querySelector(".taskTime").value||0);
 
 const cost=(roleMap[role]||0)*people*freq*(time/60);
 
-tasks.push({name,type,role,people,freq,time,cost});
+tasks.push({name,role,people,freq,time,cost});
 
 total+=cost;
 
@@ -170,6 +267,7 @@ localStorage.setItem("diagnosis", JSON.stringify(data));
 location.href="result.html";
 }
 
+/* 初期 */
 addRole();
 addTask();
 
