@@ -2,176 +2,86 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>業務コスト診断</title>
+<title>診断結果</title>
 
 <style>
 body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
-.section{background:#fff;padding:16px;margin-bottom:16px;border:1px solid #ccc;}
-input,select{padding:6px;width:100%;}
-button{padding:8px 16px;margin-top:8px;}
-
-.role-row,.role-header{
-display:grid;
-grid-template-columns:1fr 1fr 60px;
-gap:6px;
-align-items:center;
-}
-.task-row,.task-header{
-display:grid;
-grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
-gap:6px;
-align-items:center;
-}
-.delete-btn{height:30px;}
+.box{background:#fff;padding:20px;border:1px solid #ccc;}
+.item{margin-bottom:15px;}
+.big{font-size:22px;font-weight:bold;}
 </style>
 </head>
 
 <body>
 
-<h2>業務コスト診断</h2>
+<div class="box">
 
-<div class="section">
-<h3>会社名</h3>
-<input id="company">
+<h2>診断結果</h2>
+
+<div id="company"></div>
+
+<div class="item">
+<div>年間業務コスト</div>
+<div class="big" id="total"></div>
 </div>
 
-<div class="section">
-<h3>部署</h3>
-<input id="dept">
+<div class="item">
+<div>最もコストの高い業務</div>
+<div class="big" id="top"></div>
 </div>
 
-<div class="section">
-<h3>役職</h3>
-<div id="roles"></div>
-<button onclick="addRole()">追加</button>
+<div class="item">
+<div>削減可能コスト</div>
+<div class="big" id="save"></div>
 </div>
 
-<div class="section">
-<h3>業務</h3>
-<div id="tasks"></div>
-<button onclick="addTask()">追加</button>
+<div class="item">
+<div>創出時間</div>
+<div class="big" id="time"></div>
 </div>
 
-<button onclick="calculate()">診断</button>
+<hr>
+
+<h3>業務一覧</h3>
+<div id="list"></div>
+
+</div>
 
 <script>
 
-let roles=[];
+const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
 
-function addRole(){
-const id=Date.now();
-roles.push(id);
+function yen(v){ return (v||0).toLocaleString()+"円"; }
 
-document.getElementById("roles").insertAdjacentHTML("beforeend",`
-<div class="role-row">
-<input id="role_${id}" placeholder="役職">
-<input id="wage_${id}" type="number" placeholder="時給">
-<button onclick="removeRole(${id},this)">削除</button>
+document.getElementById("company").innerText = data.company || "";
+
+document.getElementById("total").innerText = yen(data.total);
+
+document.getElementById("top").innerText = data.topTask || "";
+
+const min = data.total*0.3;
+const max = data.total*0.5;
+
+document.getElementById("save").innerText =
+yen(min)+"〜"+yen(max);
+
+const timeMin=(min/1500).toFixed(0);
+const timeMax=(max/1500).toFixed(0);
+
+document.getElementById("time").innerText =
+timeMin+"〜"+timeMax+"時間/年";
+
+/* 一覧 */
+let html="";
+data.tasks?.forEach(t=>{
+html+=`
+<div>
+${t.name} / ${yen(t.cost)}
 </div>
-`);
-}
-
-function removeRole(id,btn){
-roles=roles.filter(r=>r!==id);
-btn.parentElement.remove();
-}
-
-/* 業務 */
-function addTask(){
-document.getElementById("tasks").insertAdjacentHTML("beforeend",`
-<div class="task-row">
-<input class="taskName">
-<input class="taskType">
-<select class="taskRole"></select>
-<input class="taskPeople" type="number">
-<select class="taskFreq">
-<option value="20">日次</option>
-<option value="1">月次</option>
-<option value="0.33">四半期</option>
-<option value="0.17">半年</option>
-<option value="0.08">年次</option>
-</select>
-<input class="taskTime" type="number">
-<button onclick="this.parentElement.remove()">削除</button>
-</div>
-`);
-updateRoles();
-}
-
-function updateRoles(){
-const names=roles.map(id=>{
-return document.getElementById("role_"+id)?.value || "";
-}).filter(v=>v);
-
-document.querySelectorAll(".taskRole").forEach(sel=>{
-sel.innerHTML="";
-names.forEach(n=>{
-const opt=document.createElement("option");
-opt.value=n;
-opt.textContent=n;
-sel.appendChild(opt);
-});
-});
-}
-
-/* 診断 */
-function calculate(){
-
-let roleMap={};
-let roleList=[];
-
-roles.forEach(id=>{
-const name=document.getElementById("role_"+id).value;
-const wage=parseFloat(document.getElementById("wage_"+id).value||0);
-if(name){
-roleMap[name]=wage;
-roleList.push({name,wage});
-}
+`;
 });
 
-let tasks=[];
-let total=0;
-let max=0;
-let topTask="";
-
-document.querySelectorAll(".task-row").forEach(row=>{
-
-const name=row.querySelector(".taskName").value;
-const type=row.querySelector(".taskType").value;
-const role=row.querySelector(".taskRole").value;
-const people=parseFloat(row.querySelector(".taskPeople").value||0);
-const freq=parseFloat(row.querySelector(".taskFreq").value||0);
-const time=parseFloat(row.querySelector(".taskTime").value||0);
-
-const cost=(roleMap[role]||0)*people*freq*(time/60);
-
-tasks.push({name,type,role,people,freq,time,cost});
-
-total+=cost;
-
-if(cost>max){
-max=cost;
-topTask=name;
-}
-
-});
-
-const data={
-company:document.getElementById("company").value,
-dept:document.getElementById("dept").value,
-roles:roleList,
-tasks:tasks,
-total:total,
-topTask:topTask
-};
-
-localStorage.setItem("diagnosis", JSON.stringify(data));
-
-location.href="result.html";
-}
-
-addRole();
-addTask();
+document.getElementById("list").innerHTML=html;
 
 </script>
 
