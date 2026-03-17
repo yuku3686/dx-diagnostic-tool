@@ -1,16 +1,51 @@
-<div class="section">
-<h3>STEP04 業務入力</h3>
-
-<div id="tasks"></div>
-
-<button onclick="addTask()">業務追加</button>
-</div>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務コスト診断ツール</title>
 
 <style>
+body{
+font-family:sans-serif;
+background:#f5f2eb;
+padding:20px;
+}
+
+.section{
+background:#fff;
+padding:20px;
+margin-bottom:20px;
+border:1px solid #ccc;
+}
+
+input,select{
+padding:8px;
+width:100%;
+}
+
+button{
+padding:10px 20px;
+margin-top:10px;
+cursor:pointer;
+}
+
+h2{
+margin-bottom:20px;
+}
+
+/* STEP4 UI改善 */
+.task-header{
+display:grid;
+grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr 0.5fr;
+gap:8px;
+font-weight:bold;
+margin-bottom:5px;
+}
 
 .task-row{
 display:grid;
-grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr;
+grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr 0.5fr;
 gap:8px;
 margin-bottom:10px;
 background:#fafafa;
@@ -19,40 +54,95 @@ border:1px solid #ddd;
 align-items:center;
 }
 
+.task-row:hover{
+background:#f0f0f0;
+}
+
 .task-row input,
 .task-row select{
 width:100%;
 padding:6px;
 }
 
-.task-header{
-display:grid;
-grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr;
-gap:8px;
-font-weight:bold;
-margin-bottom:5px;
+.delete-btn{
+background:#ccc;
+border:none;
+cursor:pointer;
 }
 
 </style>
+</head>
 
-<script>
+<body>
 
-// ヘッダー追加（最初に1回だけ）
-if(!document.getElementById("taskHeader")){
-const header=document.createElement("div");
-header.className="task-header";
-header.id="taskHeader";
-header.innerHTML=`
+<h2>業務コスト診断ツール</h2>
+
+<!-- STEP1 -->
+<div class="section">
+<h3>STEP01 会社名（必須）</h3>
+<input id="company">
+</div>
+
+<!-- STEP2 -->
+<div class="section">
+<h3>STEP02 部署名（任意）</h3>
+<input id="dept">
+</div>
+
+<!-- STEP3 -->
+<div class="section">
+<h3>STEP03 役職と時給（最低1件必須）</h3>
+<div id="roles"></div>
+<button onclick="addRole()">役職追加</button>
+</div>
+
+<!-- STEP4 -->
+<div class="section">
+<h3>STEP04 業務入力</h3>
+
+<div class="task-header">
 <div>業務名</div>
 <div>種類</div>
 <div>役職</div>
 <div>人数</div>
 <div>頻度/月</div>
 <div>時間(分)</div>
-`;
-document.getElementById("tasks").before(header);
+<div></div>
+</div>
+
+<div id="tasks"></div>
+
+<button onclick="addTask()">業務追加</button>
+</div>
+
+<!-- 実行 -->
+<button onclick="calculate()">診断結果を見る</button>
+
+<script>
+
+let roles=[];
+
+/* 役職追加 */
+function addRole(){
+const id=Date.now();
+roles.push(id);
+
+document.getElementById("roles").insertAdjacentHTML("beforeend",`
+<div style="margin-bottom:10px;">
+<select id="role_${id}">
+<option>事務</option>
+<option>営業</option>
+<option>管理職</option>
+<option>技術職</option>
+</select>
+<input id="wage_${id}" type="number" placeholder="時給（円）">
+</div>
+`);
+
+updateTaskRoles();
 }
 
+/* 業務追加 */
 function addTask(){
 
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
@@ -67,10 +157,100 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <input class="taskFreq" type="number" placeholder="20">
 <input class="taskTime" type="number" placeholder="30">
 
+<button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
+
 </div>
 `);
 
 updateTaskRoles();
 }
 
+/* 役職を業務に反映 */
+function updateTaskRoles(){
+
+const roleNames=roles.map(id=>{
+const el=document.getElementById("role_"+id);
+return el ? el.value : null;
+}).filter(Boolean);
+
+document.querySelectorAll(".taskRole").forEach(sel=>{
+const current = sel.value;
+sel.innerHTML="";
+
+roleNames.forEach(r=>{
+const opt=document.createElement("option");
+opt.value=r;
+opt.textContent=r;
+sel.appendChild(opt);
+});
+
+if(roleNames.includes(current)){
+sel.value=current;
+}
+});
+}
+
+/* 計算 */
+function calculate(){
+
+const company=document.getElementById("company").value;
+if(!company){
+alert("会社名は必須です");
+return;
+}
+
+if(roles.length===0){
+alert("役職を1つ以上入力してください");
+return;
+}
+
+let roleMap={};
+
+roles.forEach(id=>{
+const r=document.getElementById("role_"+id).value;
+const w=parseFloat(document.getElementById("wage_"+id).value||0);
+roleMap[r]=w;
+});
+
+let total=0;
+let maxCost=0;
+let topTask="";
+
+document.querySelectorAll(".task-row").forEach(row=>{
+
+const name=row.querySelector(".taskName").value;
+const role=row.querySelector(".taskRole").value;
+const people=parseFloat(row.querySelector(".taskPeople").value||0);
+const freq=parseFloat(row.querySelector(".taskFreq").value||0);
+const time=parseFloat(row.querySelector(".taskTime").value||0);
+
+const cost=roleMap[role]*people*freq*(time/60);
+
+total+=cost;
+
+if(cost>maxCost){
+maxCost=cost;
+topTask=name;
+}
+
+});
+
+/* 遷移 */
+const query=new URLSearchParams({
+total:total,
+top:topTask,
+company:company
+});
+
+location.href="result.html?"+query.toString();
+
+}
+
+/* 初期状態 */
+addRole();
+addTask();
+
 </script>
+
+</body>
+</html>
