@@ -265,7 +265,15 @@ topTask=name;
 
 });
 
-const query=new URLSearchParams({
+const query = new URLSearchParams({
+total: total,
+top: encodeURIComponent(topTask || ""),
+company: encodeURIComponent(company || "")
+});
+
+location.href = "result.html?" + query.toString();
+
+/* const query=new URLSearchParams({
 total:total,
 top:topTask,
 company:company
@@ -273,7 +281,7 @@ company:company
 
 location.href="result.html?"+query.toString();
 
-}
+}/* 
 
 /* 初期 */
 addRole();
