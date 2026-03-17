@@ -6,114 +6,126 @@
 <title>診断結果</title>
 
 <style>
-body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
-.section{background:#fff;padding:20px;margin-bottom:20px;border:1px solid #ccc;}
-.hero{background:#222;color:#fff;padding:30px;text-align:center;}
-.big{font-size:30px;color:#e63946;font-weight:bold;}
-.form{display:none;background:#fff;padding:20px;border:2px solid #222;}
-input,textarea{width:100%;margin:5px 0;padding:8px;}
-button{padding:10px 20px;margin-top:10px;}
+body{
+font-family:sans-serif;
+background:#f5f2eb;
+padding:20px;
+}
+
+.container{
+background:#fff;
+padding:20px;
+border:1px solid #ccc;
+}
+
+h2{
+margin-bottom:10px;
+}
+
+.result-box{
+background:#fafafa;
+border:1px solid #ddd;
+padding:15px;
+margin-top:15px;
+}
+
+.big{
+font-size:24px;
+font-weight:bold;
+margin:10px 0;
+}
+
+.highlight{
+color:#c0392b;
+font-weight:bold;
+}
+
+.sub{
+color:#555;
+font-size:14px;
+}
+
+.back-btn{
+margin-top:20px;
+padding:10px 20px;
+cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
-<div class="hero">
+<div class="container">
+
 <h2>診断結果</h2>
-<p class="big" id="total"></p>
-<p id="future"></p>
+
+<div id="companyName"></div>
+
+<div class="result-box">
+<div class="sub">現在の業務コスト（年間）</div>
+<div class="big" id="totalCost"></div>
 </div>
 
-<div class="section">
-<h3>最大コスト業務</h3>
-<p id="topTask"></p>
+<div class="result-box">
+<div class="sub">最もコストのかかっている業務</div>
+<div class="big" id="topTask"></div>
 </div>
 
-<div class="section">
-<h3>経営への示唆</h3>
-<p>
-この問題は人ではなく「仕組み」です。<br>
-30〜60%の削減余地があります。
-</p>
+<div class="result-box">
+<div class="sub">削減可能コスト（推定）</div>
+<div class="big highlight" id="saving"></div>
+<div class="sub">※業務効率化・IT化を行った場合の目安</div>
 </div>
 
-<div class="section">
-<button onclick="openForm()">無料で改善提案を受ける</button>
+<div class="result-box">
+<div class="sub">創出される時間</div>
+<div class="big" id="timeSaved"></div>
 </div>
 
-<div class="form" id="form">
-
-<h3>無料相談フォーム</h3>
-
-<input id="company" placeholder="会社名">
-<input id="name" placeholder="担当者名">
-<input id="mail" placeholder="メール">
-<input id="phone" placeholder="電話（任意）">
-
-<textarea id="message"></textarea>
-
-<button onclick="submitForm()">送信</button>
+<button class="back-btn" onclick="history.back()">戻る</button>
 
 </div>
 
 <script>
 
-const params=new URLSearchParams(location.search);
+/* URLパラメータ取得 */
+const params = new URLSearchParams(location.search);
 
-const total=parseFloat(params.get("total"))||0;
-const top=params.get("top")||"";
-const company=params.get("company")||"";
+const total = parseFloat(params.get("total") || 0);
+const top = params.get("top") || "未入力";
+const company = params.get("company") || "";
 
-document.getElementById("total").innerText=
-"年間 "+Math.round(total).toLocaleString()+" 円の損失";
+/* 表示 */
+document.getElementById("companyName").innerHTML =
+company ? 会社名：${company} : "";
 
-document.getElementById("future").innerText=
-"5年で "+Math.round(total*5).toLocaleString()+" 円";
-
-document.getElementById("topTask").innerText=top;
-
-document.getElementById("company").value=company;
-
-document.getElementById("message").value=
-"年間損失："+Math.round(total)+"円\n最大業務："+top+"\n改善提案希望";
-
-function openForm(){
-document.getElementById("form").style.display="block";
+/* 数値フォーマット */
+function yen(num){
+return num.toLocaleString() + "円";
 }
 
-const FORM_URL="https://docs.google.com/forms/d/e/XXXX/formResponse";
+/* 計算ロジック */
+const totalCost = total;
 
-const F_COMPANY="entry.111111";
-const F_NAME="entry.222222";
-const F_MAIL="entry.333333";
-const F_PHONE="entry.444444";
-const F_MSG="entry.555555";
+/* 改善余地（仮ロジック：30%〜50%削減可能） */
+const minSave = totalCost * 0.3;
+const maxSave = totalCost * 0.5;
 
-function submitForm(){
+/* 時間換算（時給1500円仮定） */
+const avgWage = 1500;
+const timeMin = (minSave / avgWage).toFixed(0);
+const timeMax = (maxSave / avgWage).toFixed(0);
 
-const c=document.getElementById("company").value;
-const n=document.getElementById("name").value;
-const m=document.getElementById("mail").value;
-const p=document.getElementById("phone").value;
-const msg=document.getElementById("message").value;
+/* 描画 */
+document.getElementById("totalCost").innerText = yen(totalCost);
 
-if(!c||!n||!m){alert("必須項目入力");return;}
+document.getElementById("topTask").innerText = top;
 
-fetch(FORM_URL,{
-method:"POST",
-mode:"no-cors",
-headers:{"Content-Type":"application/x-www-form-urlencoded"},
-body:
-F_COMPANY+"="+encodeURIComponent(c)+"&"+
-F_NAME+"="+encodeURIComponent(n)+"&"+
-F_MAIL+"="+encodeURIComponent(m)+"&"+
-F_PHONE+"="+encodeURIComponent(p)+"&"+
-F_MSG+"="+encodeURIComponent(msg)
-});
+document.getElementById("saving").innerText =
+`${yen(minSave)} 〜 ${yen(maxSave)}`;
 
-alert("送信しました");
-
-}
+document.getElementById("timeSaved").innerText =
+`${timeMin}時間 〜 ${timeMax}時間 / 年`;
 
 </script>
 
