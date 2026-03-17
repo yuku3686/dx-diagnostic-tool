@@ -2,185 +2,88 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>業務コスト診断ツール</title>
+<title>業務コスト診断</title>
 
 <style>
-body{
-font-family:sans-serif;
-background:#f5f2eb;
-padding:20px;
-}
+body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
+.section{background:#fff;padding:16px;margin-bottom:16px;border:1px solid #ccc;}
+input,select{padding:6px;width:100%;}
+button{padding:8px 16px;margin-top:8px;}
 
-.section{
-background:#fff;
-padding:16px;
-margin-bottom:16px;
-border:1px solid #ccc;
-}
-
-input,select{
-padding:6px;
-width:100%;
-font-size:14px;
-}
-
-button{
-padding:8px 16px;
-margin-top:8px;
-cursor:pointer;
-font-size:14px;
-}
-
-/* STEP3 */
-.role-header,
-.role-row{
+.role-row,.role-header{
 display:grid;
-grid-template-columns: 1fr 1fr 60px;
+grid-template-columns:1fr 1fr 60px;
 gap:6px;
 align-items:center;
 }
-
-.role-header{
-font-weight:bold;
-margin-bottom:4px;
-}
-
-.role-row{
-background:#fafafa;
-padding:6px;
-border:1px solid #ddd;
-margin-bottom:6px;
-}
-
-/* STEP4 */
-.task-header,
-.task-row{
+.task-row,.task-header{
 display:grid;
-grid-template-columns: 1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
+grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
 gap:6px;
 align-items:center;
 }
-
-.task-header{
-font-weight:bold;
-margin-bottom:4px;
-}
-
-.task-row{
-background:#fafafa;
-padding:6px;
-border:1px solid #ddd;
-margin-bottom:6px;
-}
-
-.task-row:hover{
-background:#f0f0f0;
-}
-
-/* 削除ボタン */
-.delete-btn{
-background:#ccc;
-border:none;
-height:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+.delete-btn{height:30px;}
 </style>
 </head>
 
 <body>
 
-<h2>業務コスト診断ツール</h2>
+<h2>業務コスト診断</h2>
 
-<!-- STEP1 -->
 <div class="section">
-<h3>STEP01 会社名（必須）</h3>
+<h3>会社名</h3>
 <input id="company">
 </div>
 
-<!-- STEP2 -->
 <div class="section">
-<h3>STEP02 部署名（任意）</h3>
+<h3>部署</h3>
 <input id="dept">
 </div>
 
-<!-- STEP3 -->
 <div class="section">
-<h3>STEP03 役職と時給</h3>
-
-<div class="role-header">
-<div>役職</div>
-<div>時給（円）</div>
-<div></div>
-</div>
-
+<h3>役職</h3>
 <div id="roles"></div>
-
-<button onclick="addRole()">役職追加</button>
+<button onclick="addRole()">追加</button>
 </div>
 
-<!-- STEP4 -->
 <div class="section">
-<h3>STEP04 業務入力</h3>
-
-<div class="task-header">
-<div>業務名</div>
-<div>種類</div>
-<div>役職</div>
-<div>人数</div>
-<div>頻度</div>
-<div>時間(分)</div>
-<div></div>
-</div>
-
+<h3>業務</h3>
 <div id="tasks"></div>
-
-<button onclick="addTask()">業務追加</button>
+<button onclick="addTask()">追加</button>
 </div>
 
-<button onclick="calculate()">診断結果を見る</button>
+<button onclick="calculate()">診断</button>
 
 <script>
 
 let roles=[];
 
-/* STEP3 */
 function addRole(){
 const id=Date.now();
 roles.push(id);
 
 document.getElementById("roles").insertAdjacentHTML("beforeend",`
 <div class="role-row">
-<input id="role_${id}" placeholder="経理">
-<input id="wage_${id}" type="number" placeholder="1200">
-<button class="delete-btn" onclick="removeRole(${id},this)">削除</button>
+<input id="role_${id}" placeholder="役職">
+<input id="wage_${id}" type="number" placeholder="時給">
+<button onclick="removeRole(${id},this)">削除</button>
 </div>
 `);
-
-document.getElementById("role_"+id).addEventListener("input", updateTaskRoles);
 }
 
 function removeRole(id,btn){
-roles = roles.filter(r=>r!==id);
+roles=roles.filter(r=>r!==id);
 btn.parentElement.remove();
-updateTaskRoles();
 }
 
-/* STEP4 */
+/* 業務 */
 function addTask(){
-
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <div class="task-row">
-
-<input class="taskName" placeholder="請求書作成">
-<input class="taskType" placeholder="事務">
-
+<input class="taskName">
+<input class="taskType">
 <select class="taskRole"></select>
-
-<input class="taskPeople" type="number" placeholder="1">
-
+<input class="taskPeople" type="number">
 <select class="taskFreq">
 <option value="20">日次</option>
 <option value="1">月次</option>
@@ -188,67 +91,53 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <option value="0.17">半年</option>
 <option value="0.08">年次</option>
 </select>
-
-<input class="taskTime" type="number" placeholder="30">
-
-<button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
-
+<input class="taskTime" type="number">
+<button onclick="this.parentElement.remove()">削除</button>
 </div>
 `);
-
-updateTaskRoles();
+updateRoles();
 }
 
-/* 役職反映 */
-function updateTaskRoles(){
-
-const roleNames=roles.map(id=>{
-const el=document.getElementById("role_"+id);
-return el ? el.value.trim() : "";
+function updateRoles(){
+const names=roles.map(id=>{
+return document.getElementById("role_"+id)?.value || "";
 }).filter(v=>v);
 
 document.querySelectorAll(".taskRole").forEach(sel=>{
-
-const current=sel.value;
 sel.innerHTML="";
-
-roleNames.forEach(r=>{
+names.forEach(n=>{
 const opt=document.createElement("option");
-opt.value=r;
-opt.textContent=r;
+opt.value=n;
+opt.textContent=n;
 sel.appendChild(opt);
 });
-
-if(roleNames.includes(current)){
-sel.value=current;
-}
 });
 }
 
-/* 計算 */
+/* 診断 */
 function calculate(){
 
-const company=document.getElementById("company").value;
-if(!company){
-alert("会社名は必須です");
-return;
-}
-
 let roleMap={};
+let roleList=[];
 
 roles.forEach(id=>{
-const r=document.getElementById("role_"+id).value.trim();
-const w=parseFloat(document.getElementById("wage_"+id).value||0);
-if(r) roleMap[r]=w;
+const name=document.getElementById("role_"+id).value;
+const wage=parseFloat(document.getElementById("wage_"+id).value||0);
+if(name){
+roleMap[name]=wage;
+roleList.push({name,wage});
+}
 });
 
+let tasks=[];
 let total=0;
-let maxCost=0;
+let max=0;
 let topTask="";
 
 document.querySelectorAll(".task-row").forEach(row=>{
 
 const name=row.querySelector(".taskName").value;
+const type=row.querySelector(".taskType").value;
 const role=row.querySelector(".taskRole").value;
 const people=parseFloat(row.querySelector(".taskPeople").value||0);
 const freq=parseFloat(row.querySelector(".taskFreq").value||0);
@@ -256,34 +145,31 @@ const time=parseFloat(row.querySelector(".taskTime").value||0);
 
 const cost=(roleMap[role]||0)*people*freq*(time/60);
 
+tasks.push({name,type,role,people,freq,time,cost});
+
 total+=cost;
 
-if(cost>maxCost){
-maxCost=cost;
+if(cost>max){
+max=cost;
 topTask=name;
 }
 
 });
 
-const query = new URLSearchParams({
-total: total,
-top: encodeURIComponent(topTask || ""),
-company: encodeURIComponent(company || "")
-});
-
-location.href = "result.html?" + query.toString();
-
-/* const query=new URLSearchParams({
+const data={
+company:document.getElementById("company").value,
+dept:document.getElementById("dept").value,
+roles:roleList,
+tasks:tasks,
 total:total,
-top:topTask,
-company:company
-});
+topTask:topTask
+};
 
-location.href="result.html?"+query.toString();
+localStorage.setItem("diagnosis", JSON.stringify(data));
 
-}/* 
+location.href="result.html";
+}
 
-/* 初期 */
 addRole();
 addTask();
 
