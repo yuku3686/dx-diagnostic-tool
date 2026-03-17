@@ -2,136 +2,176 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>診断結果</title>
+<title>業務コスト診断</title>
 
 <style>
-body{
-font-family:sans-serif;
-background:#f5f2eb;
-padding:20px;
-}
+body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
+.section{background:#fff;padding:16px;margin-bottom:16px;border:1px solid #ccc;}
+input,select{padding:6px;width:100%;}
+button{padding:8px 16px;margin-top:8px;}
 
-.container{
-background:#fff;
-padding:20px;
-border:1px solid #ccc;
+.role-row,.role-header{
+display:grid;
+grid-template-columns:1fr 1fr 60px;
+gap:6px;
+align-items:center;
 }
-
-h2{
-margin-bottom:10px;
+.task-row,.task-header{
+display:grid;
+grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
+gap:6px;
+align-items:center;
 }
-
-.result-box{
-background:#fafafa;
-border:1px solid #ddd;
-padding:15px;
-margin-top:15px;
-}
-
-.big{
-font-size:24px;
-font-weight:bold;
-margin:10px 0;
-}
-
-.highlight{
-color:#c0392b;
-font-weight:bold;
-}
-
-.sub{
-color:#555;
-font-size:14px;
-}
-
-.back-btn{
-margin-top:20px;
-padding:10px 20px;
-cursor:pointer;
-}
+.delete-btn{height:30px;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h2>業務コスト診断</h2>
 
-<h2>診断結果</h2>
-
-<div id="companyName"></div>
-
-<div class="result-box">
-<div class="sub">現在の業務コスト（年間）</div>
-<div class="big" id="totalCost"></div>
+<div class="section">
+<h3>会社名</h3>
+<input id="company">
 </div>
 
-<div class="result-box">
-<div class="sub">最もコストのかかっている業務</div>
-<div class="big" id="topTask"></div>
+<div class="section">
+<h3>部署</h3>
+<input id="dept">
 </div>
 
-<div class="result-box">
-<div class="sub">削減可能コスト（推定）</div>
-<div class="big highlight" id="saving"></div>
-<div class="sub">※業務効率化・IT化を行った場合の目安</div>
+<div class="section">
+<h3>役職</h3>
+<div id="roles"></div>
+<button onclick="addRole()">追加</button>
 </div>
 
-<div class="result-box">
-<div class="sub">創出される時間</div>
-<div class="big" id="timeSaved"></div>
+<div class="section">
+<h3>業務</h3>
+<div id="tasks"></div>
+<button onclick="addTask()">追加</button>
 </div>
 
-<button class="back-btn" onclick="history.back()">戻る</button>
-
-</div>
+<button onclick="calculate()">診断</button>
 
 <script>
 
-/* URLパラメータ取得 */
-const params = new URLSearchParams(location.search);
+let roles=[];
 
-const total = parseFloat(params.get("total") || 0);
-const top = decodeURIComponent(params.get("top") || "未入力");
-const company = decodeURIComponent(params.get("company") || "");
-/* URLパラメータ取得 */
-/*const params = new URLSearchParams(location.search);
+function addRole(){
+const id=Date.now();
+roles.push(id);
 
-const total = parseFloat(params.get("total") || 0);
-const top = params.get("top") || "未入力";
-const company = params.get("company") || "";
-/*
-/* 表示 */
-document.getElementById("companyName").innerHTML =
-company ? 会社名：${company} : "";
-
-/* 数値フォーマット */
-function yen(num){
-return num.toLocaleString() + "円";
+document.getElementById("roles").insertAdjacentHTML("beforeend",`
+<div class="role-row">
+<input id="role_${id}" placeholder="役職">
+<input id="wage_${id}" type="number" placeholder="時給">
+<button onclick="removeRole(${id},this)">削除</button>
+</div>
+`);
 }
 
-/* 計算ロジック */
-const totalCost = total;
+function removeRole(id,btn){
+roles=roles.filter(r=>r!==id);
+btn.parentElement.remove();
+}
 
-/* 改善余地（仮ロジック：30%〜50%削減可能） */
-const minSave = totalCost * 0.3;
-const maxSave = totalCost * 0.5;
+/* 業務 */
+function addTask(){
+document.getElementById("tasks").insertAdjacentHTML("beforeend",`
+<div class="task-row">
+<input class="taskName">
+<input class="taskType">
+<select class="taskRole"></select>
+<input class="taskPeople" type="number">
+<select class="taskFreq">
+<option value="20">日次</option>
+<option value="1">月次</option>
+<option value="0.33">四半期</option>
+<option value="0.17">半年</option>
+<option value="0.08">年次</option>
+</select>
+<input class="taskTime" type="number">
+<button onclick="this.parentElement.remove()">削除</button>
+</div>
+`);
+updateRoles();
+}
 
-/* 時間換算（時給1500円仮定） */
-const avgWage = 1500;
-const timeMin = (minSave / avgWage).toFixed(0);
-const timeMax = (maxSave / avgWage).toFixed(0);
+function updateRoles(){
+const names=roles.map(id=>{
+return document.getElementById("role_"+id)?.value || "";
+}).filter(v=>v);
 
-/* 描画 */
-document.getElementById("totalCost").innerText = yen(totalCost);
+document.querySelectorAll(".taskRole").forEach(sel=>{
+sel.innerHTML="";
+names.forEach(n=>{
+const opt=document.createElement("option");
+opt.value=n;
+opt.textContent=n;
+sel.appendChild(opt);
+});
+});
+}
 
-document.getElementById("topTask").innerText = top;
+/* 診断 */
+function calculate(){
 
-document.getElementById("saving").innerText =
-`${yen(minSave)} 〜 ${yen(maxSave)}`;
+let roleMap={};
+let roleList=[];
 
-document.getElementById("timeSaved").innerText =
-`${timeMin}時間 〜 ${timeMax}時間 / 年`;
+roles.forEach(id=>{
+const name=document.getElementById("role_"+id).value;
+const wage=parseFloat(document.getElementById("wage_"+id).value||0);
+if(name){
+roleMap[name]=wage;
+roleList.push({name,wage});
+}
+});
+
+let tasks=[];
+let total=0;
+let max=0;
+let topTask="";
+
+document.querySelectorAll(".task-row").forEach(row=>{
+
+const name=row.querySelector(".taskName").value;
+const type=row.querySelector(".taskType").value;
+const role=row.querySelector(".taskRole").value;
+const people=parseFloat(row.querySelector(".taskPeople").value||0);
+const freq=parseFloat(row.querySelector(".taskFreq").value||0);
+const time=parseFloat(row.querySelector(".taskTime").value||0);
+
+const cost=(roleMap[role]||0)*people*freq*(time/60);
+
+tasks.push({name,type,role,people,freq,time,cost});
+
+total+=cost;
+
+if(cost>max){
+max=cost;
+topTask=name;
+}
+
+});
+
+const data={
+company:document.getElementById("company").value,
+dept:document.getElementById("dept").value,
+roles:roleList,
+tasks:tasks,
+total:total,
+topTask:topTask
+};
+
+localStorage.setItem("diagnosis", JSON.stringify(data));
+
+location.href="result.html";
+}
+
+addRole();
+addTask();
 
 </script>
 
