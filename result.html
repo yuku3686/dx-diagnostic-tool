@@ -92,9 +92,15 @@ cursor:pointer;
 const params = new URLSearchParams(location.search);
 
 const total = parseFloat(params.get("total") || 0);
+const top = decodeURIComponent(params.get("top") || "未入力");
+const company = decodeURIComponent(params.get("company") || "");
+/* URLパラメータ取得 */
+/*const params = new URLSearchParams(location.search);
+
+const total = parseFloat(params.get("total") || 0);
 const top = params.get("top") || "未入力";
 const company = params.get("company") || "";
-
+/*
 /* 表示 */
 document.getElementById("companyName").innerHTML =
 company ? 会社名：${company} : "";
