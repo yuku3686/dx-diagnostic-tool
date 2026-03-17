@@ -1,151 +1,76 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>業務コスト診断</title>
-
-<style>
-body{font-family:sans-serif;padding:20px;background:#f5f2eb;}
-.section{background:#fff;padding:20px;margin-bottom:20px;border:1px solid #ccc;}
-input,select{margin:5px 0;padding:8px;width:100%;}
-button{padding:10px 20px;margin-top:10px;}
-</style>
-</head>
-
-<body>
-
-<h2>業務コスト診断ツール</h2>
-
-<div class="section">
-<h3>STEP01 会社名（必須）</h3>
-<input id="company" required>
-</div>
-
-<div class="section">
-<h3>STEP02 部署名（任意）</h3>
-<input id="dept">
-</div>
-
-<div class="section">
-<h3>STEP03 役職と時給</h3>
-<div id="roles"></div>
-<button onclick="addRole()">役職追加</button>
-</div>
-
 <div class="section">
 <h3>STEP04 業務入力</h3>
+
 <div id="tasks"></div>
+
 <button onclick="addTask()">業務追加</button>
 </div>
 
-<button onclick="calculate()">診断結果を見る</button>
+<style>
+
+.task-row{
+display:grid;
+grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr;
+gap:8px;
+margin-bottom:10px;
+background:#fafafa;
+padding:10px;
+border:1px solid #ddd;
+align-items:center;
+}
+
+.task-row input,
+.task-row select{
+width:100%;
+padding:6px;
+}
+
+.task-header{
+display:grid;
+grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr;
+gap:8px;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+</style>
 
 <script>
 
-let roles=[];
-
-function addRole(){
-const id=Date.now();
-roles.push(id);
-
-document.getElementById("roles").insertAdjacentHTML("beforeend",`
-<div>
-<select id="role_${id}">
-<option>事務</option>
-<option>営業</option>
-<option>管理職</option>
-<option>技術職</option>
-</select>
-<input id="wage_${id}" type="number" placeholder="時給">
-</div>
-`);
-
-updateTaskRoles();
+// ヘッダー追加（最初に1回だけ）
+if(!document.getElementById("taskHeader")){
+const header=document.createElement("div");
+header.className="task-header";
+header.id="taskHeader";
+header.innerHTML=`
+<div>業務名</div>
+<div>種類</div>
+<div>役職</div>
+<div>人数</div>
+<div>頻度/月</div>
+<div>時間(分)</div>
+`;
+document.getElementById("tasks").before(header);
 }
 
 function addTask(){
 
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
-<div>
-<input class="taskName" placeholder="業務名">
-<input class="taskType" placeholder="業務の種類">
+<div class="task-row">
+
+<input class="taskName" placeholder="例：請求書作成">
+<input class="taskType" placeholder="例：事務作業">
 
 <select class="taskRole"></select>
 
-<input class="taskPeople" type="number" placeholder="人数">
-<input class="taskFreq" type="number" placeholder="頻度/月">
-<input class="taskTime" type="number" placeholder="時間（分）">
+<input class="taskPeople" type="number" placeholder="1">
+<input class="taskFreq" type="number" placeholder="20">
+<input class="taskTime" type="number" placeholder="30">
+
 </div>
 `);
 
 updateTaskRoles();
 }
 
-function updateTaskRoles(){
-const roleNames=roles.map(id=>document.getElementById("role_"+id)?.value).filter(Boolean);
-
-document.querySelectorAll(".taskRole").forEach(sel=>{
-sel.innerHTML="";
-roleNames.forEach(r=>{
-const opt=document.createElement("option");
-opt.value=r;
-opt.textContent=r;
-sel.appendChild(opt);
-});
-});
-}
-
-function calculate(){
-
-const company=document.getElementById("company").value;
-if(!company){alert("会社名必須");return;}
-
-let roleMap={};
-
-roles.forEach(id=>{
-const r=document.getElementById("role_"+id).value;
-const w=parseFloat(document.getElementById("wage_"+id).value||0);
-roleMap[r]=w;
-});
-
-let total=0;
-let maxCost=0;
-let topTask="";
-
-document.querySelectorAll("#tasks > div").forEach(t=>{
-
-const name=t.querySelector(".taskName").value;
-const role=t.querySelector(".taskRole").value;
-const people=parseFloat(t.querySelector(".taskPeople").value||0);
-const freq=parseFloat(t.querySelector(".taskFreq").value||0);
-const time=parseFloat(t.querySelector(".taskTime").value||0);
-
-const cost=roleMap[role]*people*freq*(time/60);
-
-total+=cost;
-
-if(cost>maxCost){
-maxCost=cost;
-topTask=name;
-}
-
-});
-
-const query=new URLSearchParams({
-total:total,
-top:topTask,
-company:company
-});
-
-location.href="result.html?"+query.toString();
-
-}
-
-addRole();
-addTask();
-
 </script>
-
-</body>
-</html>
