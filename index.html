@@ -14,76 +14,78 @@ padding:20px;
 
 .section{
 background:#fff;
-padding:20px;
-margin-bottom:20px;
+padding:16px;
+margin-bottom:16px;
 border:1px solid #ccc;
 }
 
 input,select{
-padding:8px;
+padding:6px;
 width:100%;
+font-size:14px;
 }
 
 button{
-padding:10px 20px;
-margin-top:10px;
+padding:8px 16px;
+margin-top:8px;
 cursor:pointer;
+font-size:14px;
 }
 
-/* STEP3 横並び */
-.role-header{
+/* STEP3 */
+.role-header,
+.role-row{
 display:grid;
-grid-template-columns: 1fr 1fr 0.3fr;
-gap:8px;
+grid-template-columns: 1fr 1fr 60px;
+gap:6px;
+align-items:center;
+}
+
+.role-header{
 font-weight:bold;
-margin-bottom:5px;
+margin-bottom:4px;
 }
 
 .role-row{
-display:grid;
-grid-template-columns: 1fr 1fr 0.3fr;
-gap:8px;
-margin-bottom:10px;
 background:#fafafa;
-padding:10px;
+padding:6px;
 border:1px solid #ddd;
-align-items:center;
-}
-
-.role-row input{
-margin:0;
+margin-bottom:6px;
 }
 
 /* STEP4 */
-.task-header{
-display:grid;
-grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr 0.5fr;
-gap:8px;
-font-weight:bold;
-margin-bottom:5px;
-}
-
+.task-header,
 .task-row{
 display:grid;
-grid-template-columns: 1.5fr 1.5fr 1fr 0.7fr 0.7fr 1fr 0.5fr;
-gap:8px;
-margin-bottom:10px;
-background:#fafafa;
-padding:10px;
-border:1px solid #ddd;
+grid-template-columns: 1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
+gap:6px;
 align-items:center;
 }
 
-.task-row input,
-.task-row select{
-width:100%;
-padding:6px;
+.task-header{
+font-weight:bold;
+margin-bottom:4px;
 }
 
+.task-row{
+background:#fafafa;
+padding:6px;
+border:1px solid #ddd;
+margin-bottom:6px;
+}
+
+.task-row:hover{
+background:#f0f0f0;
+}
+
+/* 削除ボタン */
 .delete-btn{
 background:#ccc;
 border:none;
-cursor:pointer;
+height:30px;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 </style>
 </head>
@@ -106,7 +108,7 @@ cursor:pointer;
 
 <!-- STEP3 -->
 <div class="section">
-<h3>STEP03 役職と時給（自由入力）</h3>
+<h3>STEP03 役職と時給</h3>
 
 <div class="role-header">
 <div>役職</div>
@@ -128,7 +130,7 @@ cursor:pointer;
 <div>種類</div>
 <div>役職</div>
 <div>人数</div>
-<div>頻度/月</div>
+<div>頻度</div>
 <div>時間(分)</div>
 <div></div>
 </div>
@@ -144,26 +146,24 @@ cursor:pointer;
 
 let roles=[];
 
-/* STEP3 横並び */
+/* STEP3 */
 function addRole(){
 const id=Date.now();
 roles.push(id);
 
 document.getElementById("roles").insertAdjacentHTML("beforeend",`
 <div class="role-row">
-<input id="role_${id}" placeholder="例：経理">
+<input id="role_${id}" placeholder="経理">
 <input id="wage_${id}" type="number" placeholder="1200">
-<button class="delete-btn" onclick="removeRole(${id}, this)">削除</button>
+<button class="delete-btn" onclick="removeRole(${id},this)">削除</button>
 </div>
 `);
 
-// 入力変更で即反映
 document.getElementById("role_"+id).addEventListener("input", updateTaskRoles);
 }
 
-/* 役職削除 */
-function removeRole(id, btn){
-roles = roles.filter(r => r !== id);
+function removeRole(id,btn){
+roles = roles.filter(r=>r!==id);
 btn.parentElement.remove();
 updateTaskRoles();
 }
@@ -175,12 +175,20 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <div class="task-row">
 
 <input class="taskName" placeholder="請求書作成">
-<input class="taskType" placeholder="事務作業">
+<input class="taskType" placeholder="事務">
 
 <select class="taskRole"></select>
 
 <input class="taskPeople" type="number" placeholder="1">
-<input class="taskFreq" type="number" placeholder="20">
+
+<select class="taskFreq">
+<option value="20">日次</option>
+<option value="1">月次</option>
+<option value="0.33">四半期</option>
+<option value="0.17">半年</option>
+<option value="0.08">年次</option>
+</select>
+
 <input class="taskTime" type="number" placeholder="30">
 
 <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
@@ -197,7 +205,7 @@ function updateTaskRoles(){
 const roleNames=roles.map(id=>{
 const el=document.getElementById("role_"+id);
 return el ? el.value.trim() : "";
-}).filter(v=>v !== "");
+}).filter(v=>v);
 
 document.querySelectorAll(".taskRole").forEach(sel=>{
 
