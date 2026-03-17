@@ -22,7 +22,6 @@ border:1px solid #ccc;
 input,select{
 padding:8px;
 width:100%;
-margin-bottom:8px;
 }
 
 button{
@@ -31,12 +30,28 @@ margin-top:10px;
 cursor:pointer;
 }
 
-/* STEP3 */
+/* STEP3 横並び */
+.role-header{
+display:grid;
+grid-template-columns: 1fr 1fr 0.3fr;
+gap:8px;
+font-weight:bold;
+margin-bottom:5px;
+}
+
 .role-row{
+display:grid;
+grid-template-columns: 1fr 1fr 0.3fr;
+gap:8px;
+margin-bottom:10px;
 background:#fafafa;
 padding:10px;
 border:1px solid #ddd;
-margin-bottom:10px;
+align-items:center;
+}
+
+.role-row input{
+margin:0;
 }
 
 /* STEP4 */
@@ -57,6 +72,12 @@ background:#fafafa;
 padding:10px;
 border:1px solid #ddd;
 align-items:center;
+}
+
+.task-row input,
+.task-row select{
+width:100%;
+padding:6px;
 }
 
 .delete-btn{
@@ -86,7 +107,15 @@ cursor:pointer;
 <!-- STEP3 -->
 <div class="section">
 <h3>STEP03 役職と時給（自由入力）</h3>
+
+<div class="role-header">
+<div>役職</div>
+<div>時給（円）</div>
+<div></div>
+</div>
+
 <div id="roles"></div>
+
 <button onclick="addRole()">役職追加</button>
 </div>
 
@@ -115,20 +144,28 @@ cursor:pointer;
 
 let roles=[];
 
-/* STEP3：自由入力 */
+/* STEP3 横並び */
 function addRole(){
 const id=Date.now();
 roles.push(id);
 
 document.getElementById("roles").insertAdjacentHTML("beforeend",`
 <div class="role-row">
-<input id="role_${id}" placeholder="例：経理担当">
-<input id="wage_${id}" type="number" placeholder="時給（円）">
+<input id="role_${id}" placeholder="例：経理">
+<input id="wage_${id}" type="number" placeholder="1200">
+<button class="delete-btn" onclick="removeRole(${id}, this)">削除</button>
 </div>
 `);
 
-// 入力変更時に即反映
+// 入力変更で即反映
 document.getElementById("role_"+id).addEventListener("input", updateTaskRoles);
+}
+
+/* 役職削除 */
+function removeRole(id, btn){
+roles = roles.filter(r => r !== id);
+btn.parentElement.remove();
+updateTaskRoles();
 }
 
 /* STEP4 */
@@ -137,8 +174,8 @@ function addTask(){
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <div class="task-row">
 
-<input class="taskName" placeholder="例：請求書作成">
-<input class="taskType" placeholder="例：事務作業">
+<input class="taskName" placeholder="請求書作成">
+<input class="taskType" placeholder="事務作業">
 
 <select class="taskRole"></select>
 
@@ -154,7 +191,7 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 updateTaskRoles();
 }
 
-/* 役職を反映 */
+/* 役職反映 */
 function updateTaskRoles(){
 
 const roleNames=roles.map(id=>{
