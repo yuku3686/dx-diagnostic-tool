@@ -5,10 +5,66 @@
 <title>診断結果</title>
 
 <style>
-body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
-.box{background:#fff;padding:20px;border:1px solid #ccc;}
-.item{margin-bottom:15px;}
-.big{font-size:22px;font-weight:bold;}
+body{
+font-family:sans-serif;
+background:#f5f2eb;
+padding:20px;
+}
+
+.box{
+background:#fff;
+padding:20px;
+border:1px solid #ccc;
+max-width:800px;
+margin:auto;
+}
+
+.section{
+margin-bottom:25px;
+}
+
+.title{
+font-size:20px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.big{
+font-size:26px;
+font-weight:bold;
+margin:10px 0;
+}
+
+.danger{
+color:#c0392b;
+font-weight:bold;
+}
+
+.good{
+color:#27ae60;
+font-weight:bold;
+}
+
+.cta{
+background:#2c3e50;
+color:#fff;
+padding:15px;
+text-align:center;
+cursor:pointer;
+margin-top:20px;
+}
+
+.sub{
+color:#555;
+font-size:14px;
+line-height:1.6;
+}
+
+.list{
+background:#fafafa;
+padding:10px;
+border:1px solid #ddd;
+}
 </style>
 </head>
 
@@ -20,30 +76,58 @@ body{font-family:sans-serif;background:#f5f2eb;padding:20px;}
 
 <div id="company"></div>
 
-<div class="item">
-<div>年間業務コスト</div>
+<!-- ① 現状 -->
+<div class="section">
+<div class="title">① 現在の業務コスト</div>
 <div class="big" id="total"></div>
+<div class="sub">
+日常業務の中で、これだけの人件費が使われています。
+</div>
 </div>
 
-<div class="item">
-<div>最もコストの高い業務</div>
-<div class="big" id="top"></div>
+<!-- ② 問題提起 -->
+<div class="section">
+<div class="title">② 最もコストのかかっている業務</div>
+<div class="big danger" id="top"></div>
+<div class="sub">
+この業務が、コスト構造のボトルネックになっている可能性があります。
+</div>
 </div>
 
-<div class="item">
-<div>削減可能コスト</div>
-<div class="big" id="save"></div>
+<!-- ③ 改善余地 -->
+<div class="section">
+<div class="title">③ 改善余地</div>
+<div class="big good" id="save"></div>
+<div class="sub">
+業務整理やIT化により削減できる可能性があります。
+</div>
 </div>
 
-<div class="item">
-<div>創出時間</div>
+<!-- ④ 時間 -->
+<div class="section">
+<div class="title">④ 創出される時間</div>
 <div class="big" id="time"></div>
+<div class="sub">
+本来やるべき業務（営業・改善）に使える時間です。
+</div>
 </div>
 
-<hr>
+<!-- ⑤ 気づき -->
+<div class="section">
+<div class="title">⑤ この結果から言えること</div>
+<div class="sub" id="insight"></div>
+</div>
 
-<h3>業務一覧</h3>
-<div id="list"></div>
+<!-- ⑥ 提案 -->
+<div class="section">
+<div class="title">⑥ 改善の方向性</div>
+<div class="list" id="suggest"></div>
+</div>
+
+<!-- CTA -->
+<div class="cta" onclick="alert('ここに問い合わせ導線を設置')">
+無料で具体的な改善提案を受ける
+</div>
 
 </div>
 
@@ -71,17 +155,30 @@ const timeMax=(max/1500).toFixed(0);
 document.getElementById("time").innerText =
 timeMin+"〜"+timeMax+"時間/年";
 
-/* 一覧 */
+/* 洞察 */
+let insight="";
+if(data.total > 1000000){
+insight="業務コストが高く、構造的な見直し余地が大きい状態です。";
+}else{
+insight="現状は適正範囲ですが、一部業務に改善余地があります。";
+}
+
+document.getElementById("insight").innerText = insight;
+
+/* 提案 */
 let html="";
+
 data.tasks?.forEach(t=>{
-html+=`
-<div>
-${t.name} / ${yen(t.cost)}
-</div>
-`;
+if(t.cost > data.total * 0.2){
+html += `<div>・${t.name} → IT化または外注の優先候補</div>`;
+}
 });
 
-document.getElementById("list").innerHTML=html;
+if(html===""){
+html="・一部業務の見直しで効率化余地があります";
+}
+
+document.getElementById("suggest").innerHTML = html;
 
 </script>
 
