@@ -1,373 +1,151 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>業務損失診断ツール</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<title>業務コスト診断</title>
 
 <style>
-
-body{
-font-family:'Noto Sans JP',sans-serif;
-background:#f5f2eb;
-padding:40px;
-color:#1a1a18;
-}
-
-.wrap{
-max-width:1000px;
-margin:auto;
-}
-
-h1{
-font-size:28px;
-margin-bottom:20px;
-}
-
-h2{
-margin-top:40px;
-margin-bottom:10px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-margin-bottom:20px;
-}
-
-th{
-background:#1a1a18;
-color:white;
-font-size:12px;
-padding:8px;
-}
-
-td{
-border-bottom:1px solid #ddd;
-padding:6px;
-}
-
-input,select{
-width:100%;
-padding:6px;
-}
-
-button{
-padding:10px 18px;
-border:none;
-background:#1a1a18;
-color:white;
-cursor:pointer;
-}
-
-button:hover{
-background:#c8401a;
-}
-
-.calc{
-font-weight:bold;
-color:#c8401a;
-text-align:right;
-}
-
-.total{
-font-size:22px;
-font-weight:900;
-color:#c8401a;
-}
-
-.center{
-text-align:center;
-margin-top:30px;
-}
-
-.result{
-display:none;
-margin-top:40px;
-padding:20px;
-background:white;
-border:2px solid #1a1a18;
-}
-
+body{font-family:sans-serif;padding:20px;background:#f5f2eb;}
+.section{background:#fff;padding:20px;margin-bottom:20px;border:1px solid #ccc;}
+input,select{margin:5px 0;padding:8px;width:100%;}
+button{padding:10px 20px;margin-top:10px;}
 </style>
-
 </head>
 
 <body>
 
-<div class="wrap">
+<h2>業務コスト診断ツール</h2>
 
-<h1>業務損失診断ツール</h1>
+<div class="section">
+<h3>STEP01 会社名（必須）</h3>
+<input id="company" required>
+</div>
 
-<h2>STEP01 会社名（必須）</h2>
-<input id="company">
-
-<h2>STEP02 部署名（任意）</h2>
+<div class="section">
+<h3>STEP02 部署名（任意）</h3>
 <input id="dept">
+</div>
 
-<h2>STEP03 役職と時給</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>役職</th>
-<th>時給</th>
-<th></th>
-</tr>
-</thead>
-
-<tbody id="roleBody">
-
-<tr>
-<td><input class="role"></td>
-<td><input type="number" class="wage"></td>
-<td><button onclick="deleteRow(this)">×</button></td>
-</tr>
-
-</tbody>
-
-</table>
-
+<div class="section">
+<h3>STEP03 役職と時給</h3>
+<div id="roles"></div>
 <button onclick="addRole()">役職追加</button>
+</div>
 
-<h2>STEP04 業務入力</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>業務名</th>
-<th>業務種類</th>
-<th>役職</th>
-<th>人数</th>
-<th>頻度</th>
-<th>作業時間(分)</th>
-<th>年間コスト</th>
-<th></th>
-</tr>
-</thead>
-
-<tbody id="taskBody">
-
-<tr>
-
-<td><input></td>
-
-<td>
-<select>
-<option>事務</option>
-<option>営業</option>
-<option>管理</option>
-<option>製造</option>
-</select>
-</td>
-
-<td>
-<select class="roleSelect"></select>
-</td>
-
-<td>
-<input type="number" value="1" class="people">
-</td>
-
-<td>
-<select class="freq">
-<option value="240">毎日</option>
-<option value="52">週1</option>
-<option value="12">月1</option>
-<option value="1">年1</option>
-</select>
-</td>
-
-<td>
-<input type="number" value="10" class="time">
-</td>
-
-<td class="calc">0</td>
-
-<td>
-<button onclick="deleteRow(this)">×</button>
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
+<div class="section">
+<h3>STEP04 業務入力</h3>
+<div id="tasks"></div>
 <button onclick="addTask()">業務追加</button>
-
-<div class="center">
-<button onclick="showResult()">診断結果を見る</button>
 </div>
 
-<div class="result" id="resultBox">
-
-<h2>診断結果</h2>
-
-<p class="total">
-年間業務損失：  
-<span id="totalCost">0</span> 円
-</p>
-
-</div>
-
-</div>
+<button onclick="calculate()">診断結果を見る</button>
 
 <script>
 
-function updateRoleOptions(){
-
-let roles=document.querySelectorAll(".role");
-let selects=document.querySelectorAll(".roleSelect");
-
-selects.forEach(sel=>{
-
-let current=sel.value;
-
-sel.innerHTML="";
-
-roles.forEach((r,i)=>{
-
-let name=r.value || "役職"+(i+1);
-
-let option=document.createElement("option");
-
-option.value=i;
-option.text=name;
-
-sel.appendChild(option);
-
-});
-
-if(current) sel.value=current;
-
-});
-
-}
-
-function calculate(){
-
-let rows=document.querySelectorAll("#taskBody tr");
-
-let total=0;
-
-rows.forEach(row=>{
-
-let roleIndex=row.querySelector(".roleSelect").value;
-
-let wage=document.querySelectorAll(".wage")[roleIndex]?.value;
-
-let people=row.querySelector(".people").value;
-
-let freq=row.querySelector(".freq").value;
-
-let time=row.querySelector(".time").value;
-
-if(!wage)return;
-
-let cost=wage*people*(time/60)*freq;
-
-row.querySelector(".calc").innerText=Math.round(cost).toLocaleString();
-
-total+=cost;
-
-});
-
-document.getElementById("totalCost").innerText=Math.round(total).toLocaleString();
-
-}
+let roles=[];
 
 function addRole(){
+const id=Date.now();
+roles.push(id);
 
-let row=document.createElement("tr");
+document.getElementById("roles").insertAdjacentHTML("beforeend",`
+<div>
+<select id="role_${id}">
+<option>事務</option>
+<option>営業</option>
+<option>管理職</option>
+<option>技術職</option>
+</select>
+<input id="wage_${id}" type="number" placeholder="時給">
+</div>
+`);
 
-row.innerHTML=`
-<td><input class="role"></td>
-<td><input type="number" class="wage"></td>
-<td><button onclick="deleteRow(this)">×</button></td>
-`;
-
-document.getElementById("roleBody").appendChild(row);
-
-updateRoleOptions();
-
+updateTaskRoles();
 }
 
 function addTask(){
 
-let row=document.createElement("tr");
+document.getElementById("tasks").insertAdjacentHTML("beforeend",`
+<div>
+<input class="taskName" placeholder="業務名">
+<input class="taskType" placeholder="業務の種類">
 
-row.innerHTML=`
-<td><input></td>
-<td>
-<select>
-<option>事務</option>
-<option>営業</option>
-<option>管理</option>
-<option>製造</option>
-</select>
-</td>
-<td><select class="roleSelect"></select></td>
-<td><input type="number" value="1" class="people"></td>
-<td>
-<select class="freq">
-<option value="240">毎日</option>
-<option value="52">週1</option>
-<option value="12">月1</option>
-<option value="1">年1</option>
-</select>
-</td>
-<td><input type="number" value="10" class="time"></td>
-<td class="calc">0</td>
-<td><button onclick="deleteRow(this)">×</button></td>
-`;
+<select class="taskRole"></select>
 
-document.getElementById("taskBody").appendChild(row);
+<input class="taskPeople" type="number" placeholder="人数">
+<input class="taskFreq" type="number" placeholder="頻度/月">
+<input class="taskTime" type="number" placeholder="時間（分）">
+</div>
+`);
 
-updateRoleOptions();
-
+updateTaskRoles();
 }
 
-function deleteRow(btn){
+function updateTaskRoles(){
+const roleNames=roles.map(id=>document.getElementById("role_"+id)?.value).filter(Boolean);
 
-btn.closest("tr").remove();
-
-updateRoleOptions();
-calculate();
-
+document.querySelectorAll(".taskRole").forEach(sel=>{
+sel.innerHTML="";
+roleNames.forEach(r=>{
+const opt=document.createElement("option");
+opt.value=r;
+opt.textContent=r;
+sel.appendChild(opt);
+});
+});
 }
 
-function showResult(){
+function calculate(){
 
-calculate();
+const company=document.getElementById("company").value;
+if(!company){alert("会社名必須");return;}
 
-document.getElementById("resultBox").style.display="block";
+let roleMap={};
 
-document.getElementById("resultBox").scrollIntoView({
-behavior:"smooth"
+roles.forEach(id=>{
+const r=document.getElementById("role_"+id).value;
+const w=parseFloat(document.getElementById("wage_"+id).value||0);
+roleMap[r]=w;
 });
 
+let total=0;
+let maxCost=0;
+let topTask="";
+
+document.querySelectorAll("#tasks > div").forEach(t=>{
+
+const name=t.querySelector(".taskName").value;
+const role=t.querySelector(".taskRole").value;
+const people=parseFloat(t.querySelector(".taskPeople").value||0);
+const freq=parseFloat(t.querySelector(".taskFreq").value||0);
+const time=parseFloat(t.querySelector(".taskTime").value||0);
+
+const cost=roleMap[role]*people*freq*(time/60);
+
+total+=cost;
+
+if(cost>maxCost){
+maxCost=cost;
+topTask=name;
 }
-
-document.addEventListener("input",()=>{
-
-updateRoleOptions();
-calculate();
 
 });
 
-updateRoleOptions();
+const query=new URLSearchParams({
+total:total,
+top:topTask,
+company:company
+});
+
+location.href="result.html?"+query.toString();
+
+}
+
+addRole();
+addTask();
 
 </script>
 
 </body>
-
 </html>
