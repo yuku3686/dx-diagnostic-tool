@@ -47,7 +47,7 @@ border:1px solid #ddd;
 margin-bottom:6px;
 }
 
-/* STEP4（列追加済） */
+/* STEP4 */
 .task-header,.task-row{
 display:grid;
 grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
@@ -173,6 +173,7 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <input class="taskName" placeholder="請求書作成">
 
 <select class="taskType">
+<option value="" disabled selected>選択してください</option>
 <option>データ転記・コピペ作業</option>
 <option>定型レポート・集計作業</option>
 <option>請求書・見積書の作成</option>
