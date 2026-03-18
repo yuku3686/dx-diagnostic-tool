@@ -47,10 +47,10 @@ border:1px solid #ddd;
 margin-bottom:6px;
 }
 
-/* STEP4 */
+/* STEP4（列追加済） */
 .task-header,.task-row{
 display:grid;
-grid-template-columns:1.5fr 1fr 0.6fr 1fr 1fr 60px;
+grid-template-columns:1.5fr 1.5fr 1fr 0.6fr 1fr 1fr 60px;
 gap:6px;
 align-items:center;
 }
@@ -124,6 +124,7 @@ height:30px;
 
 <div class="task-header">
 <div>業務名</div>
+<div>業務の種類</div>
 <div>担当区分</div>
 <div>人数</div>
 <div>頻度</div>
@@ -168,9 +169,24 @@ updateRoles();
 function addTask(){
 document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <div class="task-row">
+
 <input class="taskName" placeholder="請求書作成">
+
+<select class="taskType">
+<option>データ転記・コピペ作業</option>
+<option>定型レポート・集計作業</option>
+<option>請求書・見積書の作成</option>
+<option>在庫・進捗の確認・記録</option>
+<option>定型メール・FAXの送信</option>
+<option>日報・勤怠・作業記録の入力</option>
+<option>手書き書類のデータ入力</option>
+<option>その他の定型事務作業</option>
+</select>
+
 <select class="taskRole"></select>
+
 <input class="taskPeople" type="number" placeholder="1">
+
 <select class="taskFreq">
 <option value="20">日次</option>
 <option value="4.5">週次</option>
@@ -179,8 +195,11 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <option value="0.17">半年</option>
 <option value="0.08">年次</option>
 </select>
+
 <input class="taskTime" type="number" placeholder="30">
+
 <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
+
 </div>
 `);
 
@@ -236,6 +255,7 @@ let topTask="";
 document.querySelectorAll(".task-row").forEach(row=>{
 
 const name=row.querySelector(".taskName").value;
+const type=row.querySelector(".taskType").value;
 const role=row.querySelector(".taskRole").value;
 const people=parseFloat(row.querySelector(".taskPeople").value||0);
 const freq=parseFloat(row.querySelector(".taskFreq").value||0);
@@ -243,7 +263,7 @@ const time=parseFloat(row.querySelector(".taskTime").value||0);
 
 const cost=(roleMap[role]||0)*people*freq*(time/60);
 
-tasks.push({name,role,people,freq,time,cost});
+tasks.push({name,type,role,people,freq,time,cost});
 
 total+=cost;
 
