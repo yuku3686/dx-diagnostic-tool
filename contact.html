@@ -39,12 +39,6 @@ border:none;
 cursor:pointer;
 font-size:15px;
 }
-
-.note{
-font-size:12px;
-color:#666;
-margin-bottom:10px;
-}
 </style>
 </head>
 
@@ -53,10 +47,6 @@ margin-bottom:10px;
 <div class="box">
 
 <h2>改善プランのご依頼</h2>
-
-<div class="note">
-入力は1分で完了します。担当者よりご連絡いたします。
-</div>
 
 <input id="name" placeholder="姓名（漢字）" required>
 <input id="kana" placeholder="姓名（カナ）" required>
@@ -74,42 +64,44 @@ const name = document.getElementById("name").value;
 const kana = document.getElementById("kana").value;
 const email = document.getElementById("email").value;
 
-/* バリデーション */
 if(!name || !kana || !email){
-alert("全ての項目を入力してください");
+alert("全て入力してください");
 return;
 }
 
 /* 診断データ取得 */
 const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
 
-/* 業務サマリー生成 */
+/* サマリー生成 */
 let summary = "";
 let totalCost = 0;
+let totalTime = 0;
 
 (data.tasks || []).forEach(t=>{
 summary += `${t.name || "業務"} / ${Math.round(t.cost || 0)}円\n`;
 totalCost += t.cost || 0;
+totalTime += t.time || 0;
 });
 
-/* Googleフォーム設定（←ここを置き換え） */
-const formURL = "https://docs.google.com/forms/d/e/XXXXXXXXXXXX/formResponse";
+summary = `
+会社名：${data.company || ""}
+対象業務数：${(data.tasks || []).length}
+年間コスト：${Math.round(totalCost)}円
 
-/* フィールドID（要設定） */
-const formData = new FormData();
-
-formData.append("entry.1111111111", name);
-formData.append("entry.2222222222", kana);
-formData.append("entry.3333333333", email);
-
-/* 診断サマリー */
-formData.append("entry.4444444444", summary);
-
-/* JSONデータ */
-formData.append("entry.5555555555", JSON.stringify(data));
+業務一覧：
+${summary}
+`;
 
 /* 送信 */
-fetch(formURL, {
+const formData = new FormData();
+
+formData.append("entry.198663789", name);
+formData.append("entry.1353516178", kana);
+formData.append("entry.1124072099", email);
+formData.append("entry.1269919873", summary);
+formData.append("entry.2025165898", JSON.stringify(data));
+
+fetch("https://docs.google.com/forms/d/e/1FAIpQLSeV4qoUfjArsbUs9B1R3U76Ii3xuwUGu7V_6qJbBgrey-Hlfw/formResponse", {
 method: "POST",
 mode: "no-cors",
 body: formData
