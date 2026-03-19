@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>お問い合わせ</title>
+<title>改善プラン依頼</title>
 
 <style>
 body{
@@ -19,10 +19,15 @@ margin:auto;
 border:1px solid #ccc;
 }
 
+h2{
+margin-bottom:20px;
+}
+
 input{
 width:100%;
 padding:10px;
-margin-bottom:10px;
+margin-bottom:12px;
+font-size:14px;
 }
 
 button{
@@ -32,6 +37,13 @@ background:#2c3e50;
 color:#fff;
 border:none;
 cursor:pointer;
+font-size:15px;
+}
+
+.note{
+font-size:12px;
+color:#666;
+margin-bottom:10px;
 }
 </style>
 </head>
@@ -42,36 +54,70 @@ cursor:pointer;
 
 <h2>改善プランのご依頼</h2>
 
+<div class="note">
+入力は1分で完了します。担当者よりご連絡いたします。
+</div>
+
 <input id="name" placeholder="姓名（漢字）" required>
 <input id="kana" placeholder="姓名（カナ）" required>
 <input id="email" placeholder="メールアドレス" required>
 
-<button onclick="sendMail()">送信</button>
+<button onclick="send()">送信する</button>
 
 </div>
 
 <script>
 
-function sendMail(){
+function send(){
 
 const name = document.getElementById("name").value;
 const kana = document.getElementById("kana").value;
 const email = document.getElementById("email").value;
 
+/* バリデーション */
+if(!name || !kana || !email){
+alert("全ての項目を入力してください");
+return;
+}
+
+/* 診断データ取得 */
 const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
 
-const body = `
-【お名前】${name}
-【カナ】${kana}
-【メール】${email}
+/* 業務サマリー生成 */
+let summary = "";
+let totalCost = 0;
 
----診断結果---
-業務数：${data.tasks?.length || 0}
-コスト：${Math.round(data.total || 0)}円
-`;
+(data.tasks || []).forEach(t=>{
+summary += `${t.name || "業務"} / ${Math.round(t.cost || 0)}円\n`;
+totalCost += t.cost || 0;
+});
 
-location.href =
-`mailto:yuku3686@gmail.com?subject=改善プラン依頼&body=${encodeURIComponent(body)}`;
+/* Googleフォーム設定（←ここを置き換え） */
+const formURL = "https://docs.google.com/forms/d/e/XXXXXXXXXXXX/formResponse";
+
+/* フィールドID（要設定） */
+const formData = new FormData();
+
+formData.append("entry.1111111111", name);
+formData.append("entry.2222222222", kana);
+formData.append("entry.3333333333", email);
+
+/* 診断サマリー */
+formData.append("entry.4444444444", summary);
+
+/* JSONデータ */
+formData.append("entry.5555555555", JSON.stringify(data));
+
+/* 送信 */
+fetch(formURL, {
+method: "POST",
+mode: "no-cors",
+body: formData
+});
+
+/* 完了画面へ */
+window.location.href = "complete.html";
+
 }
 
 </script>
