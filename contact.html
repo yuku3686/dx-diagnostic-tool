@@ -17,10 +17,14 @@ max-width:600px;
 margin:auto;
 border:1px solid #ccc;
 }
+h2{
+margin-bottom:20px;
+}
 input{
 width:100%;
 padding:10px;
 margin-bottom:12px;
+font-size:14px;
 }
 button{
 padding:12px;
@@ -29,6 +33,12 @@ background:#2c3e50;
 color:#fff;
 border:none;
 cursor:pointer;
+font-size:15px;
+}
+.note{
+font-size:12px;
+color:#666;
+margin-bottom:10px;
 }
 </style>
 </head>
@@ -39,6 +49,10 @@ cursor:pointer;
 
 <h2>改善プランのご依頼</h2>
 
+<div class="note">
+入力は1分で完了します。担当者よりご連絡いたします。
+</div>
+
 <input id="name" placeholder="姓名（漢字）">
 <input id="kana" placeholder="姓名（カナ）">
 <input id="email" placeholder="メールアドレス">
@@ -48,6 +62,17 @@ cursor:pointer;
 </div>
 
 <script>
+
+/* 頻度変換 */
+function freqLabel(freq){
+if(freq==20) return "日次";
+if(freq==4.5) return "週次";
+if(freq==1) return "月次";
+if(freq==0.33) return "四半期";
+if(freq==0.17) return "半年";
+if(freq==0.08) return "年次";
+return freq;
+}
 
 function send(){
 
@@ -60,31 +85,37 @@ alert("全て入力してください");
 return;
 }
 
-/* データ取得 */
+/* 診断データ取得 */
 const data = JSON.parse(localStorage.getItem("diagnosis") || {});
 
-/* ===== STEP3（担当区分） ===== */
+/* ===== STEP3 ===== */
 let rolesText = "【担当区分・時給】\n";
 
 (data.roles || []).forEach(r=>{
 rolesText += `${r.name || ""} / 時給${r.wage || 0}円\n`;
 });
 
-/* ===== STEP4（業務） ===== */
+/* ===== STEP4 ===== */
 let tasksText = "\n【業務一覧】\n";
 let totalCost = 0;
+let totalTime = 0;
 
 (data.tasks || []).forEach(t=>{
-tasksText += `${t.name || ""} / ${t.type || ""} / ${t.role || ""} / ${t.count || 0}人 / ${t.freq || ""} / ${t.time || 0}分\n`;
+
+tasksText += `${t.name || ""} / ${t.type || ""} / ${t.role || ""} / ${t.people || 0}人 / ${freqLabel(t.freq)} / ${t.time || 0}分\n`;
+
 totalCost += t.cost || 0;
+totalTime += (t.time || 0) * (t.freq || 0) * (t.people || 0);
 });
 
 /* ===== サマリー ===== */
 let summary = `
 会社名：${data.company || ""}
+部署：${data.dept || ""}
 
 対象業務数：${(data.tasks || []).length}
 年間コスト：${Math.round(totalCost)}円
+年間作業時間：${Math.round(totalTime)}分
 
 ${rolesText}
 ${tasksText}
@@ -105,7 +136,7 @@ mode: "no-cors",
 body: formData
 });
 
-/* 完了画面 */
+/* 完了画面へ */
 window.location.href = "complete.html";
 
 }
