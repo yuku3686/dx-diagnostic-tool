@@ -35,11 +35,7 @@ gap:6px;
 align-items:center;
 }
 
-.role-header{
-font-weight:bold;
-margin-bottom:4px;
-}
-
+.role-header{font-weight:bold;margin-bottom:4px;}
 .role-row{
 background:#fafafa;
 padding:6px;
@@ -55,11 +51,7 @@ gap:6px;
 align-items:center;
 }
 
-.task-header{
-font-weight:bold;
-margin-bottom:4px;
-}
-
+.task-header{font-weight:bold;margin-bottom:4px;}
 .task-row{
 background:#fafafa;
 padding:6px;
@@ -67,9 +59,7 @@ border:1px solid #ddd;
 margin-bottom:6px;
 }
 
-.delete-btn{
-height:30px;
-}
+.delete-btn{height:30px;}
 </style>
 </head>
 
@@ -80,28 +70,20 @@ height:30px;
 <!-- STEP1 -->
 <div class="section">
 <h3>STEP01 会社名</h3>
-<div class="desc">
-貴社名をご入力ください。診断結果に表示されます。
-</div>
+<div class="desc">貴社名をご入力ください</div>
 <input id="company">
 </div>
 
 <!-- STEP2 -->
 <div class="section">
 <h3>STEP02 部署名（任意）</h3>
-<div class="desc">
-対象とする部署があればご入力ください（例：営業部、管理部など）
-</div>
 <input id="dept">
 </div>
 
 <!-- STEP3 -->
 <div class="section">
 <h3>STEP03 担当区分と人件費</h3>
-<div class="desc">
-業務に関わる人の区分と、その時間あたりの人件費をご入力ください。<br>
-例：営業担当 1500円、営業事務 1200円、経理 1300円 など
-</div>
+<div class="desc">関わる人の区分と時給を入力</div>
 
 <div class="role-header">
 <div>担当区分</div>
@@ -117,10 +99,7 @@ height:30px;
 <!-- STEP4 -->
 <div class="section">
 <h3>STEP04 業務内容</h3>
-<div class="desc">
-日々行っている業務について入力してください。<br>
-「誰が・どれくらいの頻度で・どれくらい時間を使っているか」を整理します。
-</div>
+<div class="desc">業務の実態を入力</div>
 
 <div class="task-header">
 <div>業務名</div>
@@ -151,7 +130,7 @@ roles.push(id);
 document.getElementById("roles").insertAdjacentHTML("beforeend",`
 <div class="role-row">
 <input id="role_${id}" placeholder="営業担当">
-<input id="wage_${id}" type="number" placeholder="1500">
+<input id="wage_${id}" type="number" value="1500">
 <button class="delete-btn" onclick="removeRole(${id},this)">削除</button>
 </div>
 `);
@@ -173,20 +152,18 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <input class="taskName" placeholder="請求書作成">
 
 <select class="taskType">
-<option value="" disabled selected>選択してください</option>
-<option>データ転記・コピペ作業</option>
-<option>定型レポート・集計作業</option>
-<option>請求書・見積書の作成</option>
-<option>在庫・進捗の確認・記録</option>
-<option>定型メール・FAXの送信</option>
-<option>日報・勤怠・作業記録の入力</option>
-<option>手書き書類のデータ入力</option>
-<option>その他の定型事務作業</option>
+<option value="">選択</option>
+<option>データ転記</option>
+<option>集計作業</option>
+<option>請求書作成</option>
+<option>在庫管理</option>
+<option>メール送信</option>
+<option>入力作業</option>
 </select>
 
 <select class="taskRole"></select>
 
-<input class="taskPeople" type="number" placeholder="1">
+<input class="taskPeople" type="number" value="1">
 
 <select class="taskFreq">
 <option value="20">日次</option>
@@ -197,7 +174,7 @@ document.getElementById("tasks").insertAdjacentHTML("beforeend",`
 <option value="0.08">年次</option>
 </select>
 
-<input class="taskTime" type="number" placeholder="30">
+<input class="taskTime" type="number" value="30">
 
 <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
 
@@ -239,8 +216,8 @@ let roleMap={};
 let roleList=[];
 
 roles.forEach(id=>{
-const name=document.getElementById("role_"+id).value;
-const wage=parseFloat(document.getElementById("wage_"+id).value||0);
+const name=document.getElementById("role_"+id).value.trim();
+const wage=Number(document.getElementById("wage_"+id).value || 0);
 
 if(name){
 roleMap[name]=wage;
@@ -255,12 +232,12 @@ let topTask="";
 
 document.querySelectorAll(".task-row").forEach(row=>{
 
-const name=row.querySelector(".taskName").value;
+const name=row.querySelector(".taskName").value.trim();
 const type=row.querySelector(".taskType").value;
 const role=row.querySelector(".taskRole").value;
-const people=parseFloat(row.querySelector(".taskPeople").value||0);
-const freq=parseFloat(row.querySelector(".taskFreq").value||0);
-const time=parseFloat(row.querySelector(".taskTime").value||0);
+const people=Number(row.querySelector(".taskPeople")?.value.trim() || 0);
+const freq=Number(row.querySelector(".taskFreq")?.value || 0);
+const time=Number(row.querySelector(".taskTime")?.value.trim() || 0);
 
 const cost=(roleMap[role]||0)*people*freq*(time/60);
 
@@ -275,6 +252,17 @@ topTask=name;
 
 });
 
+/* バリデーション */
+if(!document.getElementById("company").value.trim()){
+alert("会社名を入力してください");
+return;
+}
+
+if(tasks.length===0){
+alert("業務を1つ以上入力してください");
+return;
+}
+
 const data={
 company:document.getElementById("company").value,
 dept:document.getElementById("dept").value,
@@ -284,8 +272,10 @@ total:total,
 topTask:topTask
 };
 
+/* 保存 */
 localStorage.setItem("diagnosis", JSON.stringify(data));
 
+/* 遷移 */
 location.href="result.html";
 }
 
