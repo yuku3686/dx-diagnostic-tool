@@ -10,7 +10,6 @@ font-family:sans-serif;
 background:#f5f2eb;
 padding:20px;
 }
-
 .box{
 background:#fff;
 padding:20px;
@@ -18,18 +17,11 @@ max-width:600px;
 margin:auto;
 border:1px solid #ccc;
 }
-
-h2{
-margin-bottom:20px;
-}
-
 input{
 width:100%;
 padding:10px;
 margin-bottom:12px;
-font-size:14px;
 }
-
 button{
 padding:12px;
 width:100%;
@@ -37,7 +29,6 @@ background:#2c3e50;
 color:#fff;
 border:none;
 cursor:pointer;
-font-size:15px;
 }
 </style>
 </head>
@@ -48,9 +39,9 @@ font-size:15px;
 
 <h2>改善プランのご依頼</h2>
 
-<input id="name" placeholder="姓名（漢字）" required>
-<input id="kana" placeholder="姓名（カナ）" required>
-<input id="email" placeholder="メールアドレス" required>
+<input id="name" placeholder="姓名（漢字）">
+<input id="kana" placeholder="姓名（カナ）">
+<input id="email" placeholder="メールアドレス">
 
 <button onclick="send()">送信する</button>
 
@@ -69,30 +60,37 @@ alert("全て入力してください");
 return;
 }
 
-/* 診断データ取得 */
-const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
+/* データ取得 */
+const data = JSON.parse(localStorage.getItem("diagnosis") || {});
 
-/* サマリー生成 */
-let summary = "";
-let totalCost = 0;
-let totalTime = 0;
+/* ===== STEP3（担当区分） ===== */
+let rolesText = "【担当区分・時給】\n";
 
-(data.tasks || []).forEach(t=>{
-summary += `${t.name || "業務"} / ${Math.round(t.cost || 0)}円\n`;
-totalCost += t.cost || 0;
-totalTime += t.time || 0;
+(data.roles || []).forEach(r=>{
+rolesText += `${r.name || ""} / 時給${r.wage || 0}円\n`;
 });
 
-summary = `
+/* ===== STEP4（業務） ===== */
+let tasksText = "\n【業務一覧】\n";
+let totalCost = 0;
+
+(data.tasks || []).forEach(t=>{
+tasksText += `${t.name || ""} / ${t.type || ""} / ${t.role || ""} / ${t.count || 0}人 / ${t.freq || ""} / ${t.time || 0}分\n`;
+totalCost += t.cost || 0;
+});
+
+/* ===== サマリー ===== */
+let summary = `
 会社名：${data.company || ""}
+
 対象業務数：${(data.tasks || []).length}
 年間コスト：${Math.round(totalCost)}円
 
-業務一覧：
-${summary}
+${rolesText}
+${tasksText}
 `;
 
-/* 送信 */
+/* ===== 送信 ===== */
 const formData = new FormData();
 
 formData.append("entry.198663789", name);
@@ -107,7 +105,7 @@ mode: "no-cors",
 body: formData
 });
 
-/* 完了画面へ */
+/* 完了画面 */
 window.location.href = "complete.html";
 
 }
