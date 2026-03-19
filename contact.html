@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>お問い合わせ</title>
+
+<style>
+body{
+font-family:sans-serif;
+background:#f5f2eb;
+padding:20px;
+}
+
+.box{
+background:#fff;
+padding:20px;
+max-width:600px;
+margin:auto;
+border:1px solid #ccc;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+}
+
+button{
+padding:12px;
+width:100%;
+background:#2c3e50;
+color:#fff;
+border:none;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>改善プランのご依頼</h2>
+
+<input id="name" placeholder="姓名（漢字）" required>
+<input id="kana" placeholder="姓名（カナ）" required>
+<input id="email" placeholder="メールアドレス" required>
+
+<button onclick="sendMail()">送信</button>
+
+</div>
+
+<script>
+
+function sendMail(){
+
+const name = document.getElementById("name").value;
+const kana = document.getElementById("kana").value;
+const email = document.getElementById("email").value;
+
+const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
+
+const body = `
+【お名前】${name}
+【カナ】${kana}
+【メール】${email}
+
+---診断結果---
+業務数：${data.tasks?.length || 0}
+コスト：${Math.round(data.total || 0)}円
+`;
+
+location.href =
+`mailto:yuku3686@gmail.com?subject=改善プラン依頼&body=${encodeURIComponent(body)}`;
+}
+
+</script>
+
+</body>
+</html>
