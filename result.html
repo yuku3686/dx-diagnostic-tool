@@ -14,56 +14,47 @@ padding:20px;
 .box{
 background:#fff;
 padding:20px;
-border:1px solid #ccc;
-max-width:800px;
+max-width:600px;
 margin:auto;
-}
-
-.section{
-margin-bottom:25px;
+border:1px solid #ccc;
 }
 
 .title{
 font-size:20px;
 font-weight:bold;
-margin-bottom:10px;
+margin-bottom:20px;
 }
 
-.big{
-font-size:26px;
-font-weight:bold;
-margin:10px 0;
+.item{
+margin-bottom:20px;
 }
 
-.danger{
-color:#c0392b;
-font-weight:bold;
-}
-
-.good{
-color:#27ae60;
-font-weight:bold;
-}
-
-.cta{
-background:#2c3e50;
-color:#fff;
-padding:15px;
-text-align:center;
-cursor:pointer;
-margin-top:20px;
-}
-
-.sub{
-color:#555;
+.label{
 font-size:14px;
+color:#555;
+}
+
+.value{
+font-size:22px;
+font-weight:bold;
+}
+
+.message{
+margin-top:30px;
+padding:15px;
+background:#fafafa;
+border:1px solid #ddd;
 line-height:1.6;
 }
 
-.list{
-background:#fafafa;
-padding:10px;
-border:1px solid #ddd;
+button{
+margin-top:20px;
+padding:12px;
+width:100%;
+background:#2c3e50;
+color:#fff;
+border:none;
+cursor:pointer;
 }
 </style>
 </head>
@@ -72,62 +63,28 @@ border:1px solid #ddd;
 
 <div class="box">
 
-<h2>診断結果</h2>
+<div class="title">診断結果</div>
 
-<div id="company"></div>
-
-<!-- ① 現状 -->
-<div class="section">
-<div class="title">① 現在の業務コスト</div>
-<div class="big" id="total"></div>
-<div class="sub">
-日常業務の中で、これだけの人件費が使われています。
-</div>
+<div class="item">
+<div class="label">対象業務数</div>
+<div class="value" id="taskCount"></div>
 </div>
 
-<!-- ② 問題提起 -->
-<div class="section">
-<div class="title">② 最もコストのかかっている業務</div>
-<div class="big danger" id="top"></div>
-<div class="sub">
-この業務が、コスト構造のボトルネックになっている可能性があります。
-</div>
+<div class="item">
+<div class="label">業務所要時間（年間）</div>
+<div class="value" id="totalTime"></div>
 </div>
 
-<!-- ③ 改善余地 -->
-<div class="section">
-<div class="title">③ 改善余地</div>
-<div class="big good" id="save"></div>
-<div class="sub">
-業務整理やIT化により削減できる可能性があります。
-</div>
+<div class="item">
+<div class="label">業務コスト（年間）</div>
+<div class="value" id="totalCost"></div>
 </div>
 
-<!-- ④ 時間 -->
-<div class="section">
-<div class="title">④ 創出される時間</div>
-<div class="big" id="time"></div>
-<div class="sub">
-本来やるべき業務（営業・改善）に使える時間です。
-</div>
-</div>
+<div class="message" id="message"></div>
 
-<!-- ⑤ 気づき -->
-<div class="section">
-<div class="title">⑤ この結果から言えること</div>
-<div class="sub" id="insight"></div>
-</div>
-
-<!-- ⑥ 提案 -->
-<div class="section">
-<div class="title">⑥ 改善の方向性</div>
-<div class="list" id="suggest"></div>
-</div>
-
-<!-- CTA -->
-<div class="cta" onclick="alert('ここに問い合わせ導線を設置')">
-無料で具体的な改善提案を受ける
-</div>
+<a href="contact.html">
+<button>改善プランを受け取る</button>
+</a>
 
 </div>
 
@@ -135,50 +92,33 @@ border:1px solid #ddd;
 
 const data = JSON.parse(localStorage.getItem("diagnosis") || "{}");
 
-function yen(v){ return (v||0).toLocaleString()+"円"; }
+const tasks = data.tasks || [];
 
-document.getElementById("company").innerText = data.company || "";
+let totalTime = 0;
+let totalCost = 0;
 
-document.getElementById("total").innerText = yen(data.total);
-
-document.getElementById("top").innerText = data.topTask || "";
-
-const min = data.total*0.3;
-const max = data.total*0.5;
-
-document.getElementById("save").innerText =
-yen(min)+"〜"+yen(max);
-
-const timeMin=(min/1500).toFixed(0);
-const timeMax=(max/1500).toFixed(0);
-
-document.getElementById("time").innerText =
-timeMin+"〜"+timeMax+"時間/年";
-
-/* 洞察 */
-let insight="";
-if(data.total > 1000000){
-insight="業務コストが高く、構造的な見直し余地が大きい状態です。";
-}else{
-insight="現状は適正範囲ですが、一部業務に改善余地があります。";
-}
-
-document.getElementById("insight").innerText = insight;
-
-/* 提案 */
-let html="";
-
-data.tasks?.forEach(t=>{
-if(t.cost > data.total * 0.2){
-html += `<div>・${t.name} → IT化または外注の優先候補</div>`;
-}
+/* 計算 */
+tasks.forEach(t => {
+totalTime += (t.freq * t.time / 60); // 年間時間
+totalCost += t.cost;
 });
 
-if(html===""){
-html="・一部業務の見直しで効率化余地があります";
-}
+/* 削減余地（30〜50%） */
+const minSave = totalCost * 0.3;
+const maxSave = totalCost * 0.5;
 
-document.getElementById("suggest").innerHTML = html;
+/* 表示 */
+document.getElementById("taskCount").innerText = tasks.length + "件";
+
+document.getElementById("totalTime").innerText =
+Math.round(totalTime).toLocaleString() + "時間";
+
+document.getElementById("totalCost").innerText =
+Math.round(totalCost).toLocaleString() + "円";
+
+/* メッセージ */
+document.getElementById("message").innerText =
+`年間${Math.round(totalCost).toLocaleString()}円の業務コストのうち、最大${Math.round(maxSave).toLocaleString()}円分は削減できる可能性があります。`;
 
 </script>
 
